@@ -2,8 +2,10 @@
 
 
 #include "Player/STUF_Character.h"
+#include "GameFramework/SpringArmComponent.h"
 #include "Camera/CameraComponent.h"
 #include "Components/InputComponent.h"
+
 
 
 // Sets default values
@@ -12,9 +14,13 @@ ASTUF_Character::ASTUF_Character()
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
-	CameraComponent = CreateDefaultSubobject<UCameraComponent>("CameraComponent");
+	SpringArmComponent=CreateDefaultSubobject<USpringArmComponent>("SpringArmComponent");
+	SpringArmComponent->SetupAttachment(GetRootComponent());
+	SpringArmComponent->bUsePawnControlRotation=true;
 
-	CameraComponent->SetupAttachment(GetRootComponent());
+	CameraComponent = CreateDefaultSubobject<UCameraComponent>("CameraComponent");
+	CameraComponent->SetupAttachment(SpringArmComponent);
+
 
 }
 
@@ -39,6 +45,10 @@ void ASTUF_Character::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 
 	PlayerInputComponent->BindAxis("MoveForward",this, &ASTUF_Character::MoveForward );
 	PlayerInputComponent->BindAxis("MoveRight", this, &ASTUF_Character::MoveRight );
+
+	// мышка
+	PlayerInputComponent->BindAxis("LookUp", this, &ASTUF_Character::AddControllerPitchInput);
+	PlayerInputComponent->BindAxis("TurnAround", this, &ASTUF_Character::AddControllerYawInput);
 
 }
 

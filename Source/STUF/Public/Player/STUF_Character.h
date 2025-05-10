@@ -7,6 +7,7 @@
 #include "STUF_Character.generated.h"
 
 class UCameraComponent;
+class USpringArmComponent;
 
 UCLASS()
 class STUF_API ASTUF_Character : public ACharacter
@@ -18,6 +19,8 @@ public:
 	ASTUF_Character();
 
 protected:
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "MyComponents")
+	USpringArmComponent* SpringArmComponent;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "MyComponents")
 	UCameraComponent* CameraComponent;
