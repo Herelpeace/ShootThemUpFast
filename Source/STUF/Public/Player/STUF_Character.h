@@ -32,4 +32,11 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+private:
+	// вызывается при движении вперед/ назад
+	void MoveForward(float Amount);
+
+	// вызывается при движении влево/вправо
+	void MoveRight(float Amount);
+
 };

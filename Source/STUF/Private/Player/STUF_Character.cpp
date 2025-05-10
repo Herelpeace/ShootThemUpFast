@@ -3,6 +3,7 @@
 
 #include "Player/STUF_Character.h"
 #include "Camera/CameraComponent.h"
+#include "Components/InputComponent.h"
 
 
 // Sets default values
@@ -36,5 +37,20 @@ void ASTUF_Character::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
+	PlayerInputComponent->BindAxis("MoveForward",this, &ASTUF_Character::MoveForward );
+	PlayerInputComponent->BindAxis("MoveRight", this, &ASTUF_Character::MoveRight );
+
 }
 
+	// вызывается при движении вперед/ назад
+	void ASTUF_Character::MoveForward(float Amount)
+	{
+		AddMovementInput(GetActorForwardVector(), Amount);
+	}
+
+
+	// вызывается при движении влево/вправо
+	void ASTUF_Character::MoveRight(float Amount)
+	{
+		AddMovementInput(GetActorRightVector(), Amount);
+	}
