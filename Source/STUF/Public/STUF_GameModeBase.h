@@ -14,6 +14,10 @@ class STUF_API ASTUF_GameModeBase : public AGameModeBase
 {
     GENERATED_BODY()
 
+public:
+    ASTUF_GameModeBase();
+
+
 
 
 
