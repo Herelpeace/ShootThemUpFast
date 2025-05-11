@@ -23,22 +23,18 @@ ASTUF_Character::ASTUF_Character( const FObjectInitializer& ObjInit)
 
 	CameraComponent = CreateDefaultSubobject<UCameraComponent>("CameraComponent");
 	CameraComponent->SetupAttachment(SpringArmComponent);
-
-
 }
 
 // Called when the game starts or when spawned
 void ASTUF_Character::BeginPlay()
 {
-	Super::BeginPlay();
-	
+	Super::BeginPlay();	
 }
 
 // Called every frame
 void ASTUF_Character::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
 }
 
 // Called to bind functionality to input
@@ -61,6 +57,7 @@ void ASTUF_Character::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 	// вызывается при движении вперед/ назад
 	void ASTUF_Character::MoveForward(float Amount)
 	{
+		if(Amount==0.0f) return;
 		
 		IsMovingForward = Amount>0.0f;	//нажата клавиша вперед
 		AddMovementInput(GetActorForwardVector(), Amount);
@@ -70,6 +67,7 @@ void ASTUF_Character::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 	// вызывается при движении влево/вправо
 	void ASTUF_Character::MoveRight(float Amount)
 	{
+		if(Amount==0.0f) return;
 		AddMovementInput(GetActorRightVector(), Amount);
 	}
 
@@ -83,7 +81,18 @@ void ASTUF_Character::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 		WantsToRun  = false;
 	}
 
-	bool ASTUF_Character :: IsRunning() const
+	bool ASTUF_Character::IsRunning() const
 	{
 		return WantsToRun && IsMovingForward && !GetVelocity().IsZero();
+	}
+
+	float  ASTUF_Character::GetMovementDirection() const
+	{
+		if(GetVelocity().IsZero()) return 0.0f;
+
+		const auto VelocityNormal = GetVelocity().GetSafeNormal();
+		const auto  AngleBetween = FMath::Acos(FVector::DotProduct(GetActorForwardVector(), VelocityNormal));
+		const auto CrossProduct = FVector::CrossProduct(GetActorForwardVector(), VelocityNormal);
+		const auto Degrees = FMath::RadiansToDegrees(AngleBetween);
+		return CrossProduct.IsZero() ? Degrees : Degrees* FMath::Sign(CrossProduct.Z);
 	}
