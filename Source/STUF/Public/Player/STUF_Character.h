@@ -16,7 +16,7 @@ class STUF_API ASTUF_Character : public ACharacter
 
 public:
 	// Sets default values for this character's properties
-	ASTUF_Character();
+	ASTUF_Character( const FObjectInitializer& ObjInit);
 
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "MyComponents")
@@ -35,11 +35,21 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+	// проверят включен ли бег у персонажа (клавиша Shift и вперед)
+	UFUNCTION(BlueprintCallable, Category = "MyMovement")
+	bool IsRunning() const;
+
 private:
+	bool WantsToRun = false;
+	bool IsMovingForward = false;
+
 	// вызывается при движении вперед/ назад
 	void MoveForward(float Amount);
 
 	// вызывается при движении влево/вправо
 	void MoveRight(float Amount);
+
+	void OnStartRunning();
+	void OnStopRunning();
 
 };
