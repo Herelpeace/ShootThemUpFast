@@ -45,6 +45,7 @@ void ASTUF_Character::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 
 	PlayerInputComponent->BindAxis("MoveForward",this, &ASTUF_Character::MoveForward );
 	PlayerInputComponent->BindAxis("MoveRight", this, &ASTUF_Character::MoveRight );
+	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &ASTUF_Character::Jump );
 
 	// мышка
 	PlayerInputComponent->BindAxis("LookUp", this, &ASTUF_Character::AddControllerPitchInput);
