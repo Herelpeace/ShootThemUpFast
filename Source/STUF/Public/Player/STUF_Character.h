@@ -8,6 +8,8 @@
 
 class UCameraComponent;
 class USpringArmComponent;
+class USTUF_HealthComponent;
+class UTextRenderComponent;
 
 UCLASS()
 class STUF_API ASTUF_Character : public ACharacter
@@ -24,6 +26,12 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "MyComponents")
 	UCameraComponent* CameraComponent;
+
+	UPROPERTY(VisibleAnywhere,BlueprintReadWrite,Category = "MyComponents")
+	USTUF_HealthComponent* HealthComponent;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite,Category = "MyComponents")
+	UTextRenderComponent* HealthTextComponent;
 
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;

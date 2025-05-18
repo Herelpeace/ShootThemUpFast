@@ -6,6 +6,8 @@
 #include "Camera/CameraComponent.h"
 #include "Components/InputComponent.h"
 #include "Components/STUF_CharacterMovementComponent.h"
+#include "Components/STUF_HealthComponent.h"
+#include "Components/TextRenderComponent.h"
 
 
 
@@ -23,18 +25,30 @@ ASTUF_Character::ASTUF_Character( const FObjectInitializer& ObjInit)
 
 	CameraComponent = CreateDefaultSubobject<UCameraComponent>("CameraComponent");
 	CameraComponent->SetupAttachment(SpringArmComponent);
+
+	HealthComponent = CreateDefaultSubobject<USTUF_HealthComponent>("MY_HealthComponent");
+
+	HealthTextComponent = CreateDefaultSubobject<UTextRenderComponent>("HealthTextComponent");
+	HealthTextComponent->SetupAttachment(GetRootComponent());
+
 }
 
 // Called when the game starts or when spawned
 void ASTUF_Character::BeginPlay()
 {
 	Super::BeginPlay();	
+
+	check(HealthComponent);
+	check(HealthTextComponent);
 }
 
 // Called every frame
 void ASTUF_Character::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	const auto Health = HealthComponent->GetHealth();
+    HealthTextComponent->SetText(FText::FromString(FString::Printf(TEXT("%d"),Health)));
 }
 
 // Called to bind functionality to input
