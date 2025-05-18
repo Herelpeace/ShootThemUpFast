@@ -38,7 +38,6 @@ ASTUF_Character::ASTUF_Character( const FObjectInitializer& ObjInit)
 void ASTUF_Character::BeginPlay()
 {
 	Super::BeginPlay();	
-
 	check(HealthComponent);
 	check(HealthTextComponent);
 }
@@ -50,8 +49,6 @@ void ASTUF_Character::Tick(float DeltaTime)
 
 	const auto Health = HealthComponent->GetHealth();
     HealthTextComponent->SetText(FText::FromString(FString::Printf(TEXT("%.0f "),Health)));
-
-	TakeDamage(0.1f,FDamageEvent(),Controller,this);
 }
 
 

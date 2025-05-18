@@ -3,6 +3,9 @@
 
 #include "Components/STUF_HealthComponent.h"
 #include "GameFramework/Actor.h"
+#include "Logging/StructuredLog.h"
+
+DEFINE_LOG_CATEGORY_STATIC(LogHealthComponent,All,All);
 
 USTUF_HealthComponent::USTUF_HealthComponent()
 {
@@ -30,5 +33,6 @@ void USTUF_HealthComponent::OnTakeAnyDamage(AActor* DamagedActor, float Damage, 
 {
 	Health -=Damage;
 
+	UE_LOGFMT (LogHealthComponent,Warning,"Damage: {damage}", Damage);
 }
 
