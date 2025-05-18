@@ -15,18 +15,21 @@ class STUF_API USTUF_HealthComponent : public UActorComponent
 public:
 	USTUF_HealthComponent();
 
-	int32 GetHealth() const {return Health;}
+	float GetHealth() const {return Health;}
 
 protected:
 	virtual void BeginPlay() override;
 
 	UPROPERTY(EditDefaultsOnly,BlueprintReadWrite, Category = "MyHealth", meta = (ClapmpMin = "0", ClampMax = "1000"))
-	int32 MaxHealth = 100;
+	float MaxHealth = 100;
 
 
 private:
 
-	int32 Health = 0;
+	float Health = 0;
+
+	UFUNCTION()
+	void OnTakeAnyDamage(AActor* DamagedActor, float Damage, const class UDamageType* DamageType, class AController* InstigatedBy, AActor* DamageCauser );
 
 
 };

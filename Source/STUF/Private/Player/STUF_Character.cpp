@@ -8,6 +8,7 @@
 #include "Components/STUF_CharacterMovementComponent.h"
 #include "Components/STUF_HealthComponent.h"
 #include "Components/TextRenderComponent.h"
+//#include "Logging/StructuredLog.h"
 
 
 
@@ -48,8 +49,13 @@ void ASTUF_Character::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 	const auto Health = HealthComponent->GetHealth();
-    HealthTextComponent->SetText(FText::FromString(FString::Printf(TEXT("%d"),Health)));
+    HealthTextComponent->SetText(FText::FromString(FString::Printf(TEXT("%.0f "),Health)));
+
+	TakeDamage(0.1f,FDamageEvent(),Controller,this);
 }
+
+
+
 
 // Called to bind functionality to input
 void ASTUF_Character::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -110,3 +116,4 @@ void ASTUF_Character::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 		const auto Degrees = FMath::RadiansToDegrees(AngleBetween);
 		return CrossProduct.IsZero() ? Degrees : Degrees* FMath::Sign(CrossProduct.Z);
 	}
+
