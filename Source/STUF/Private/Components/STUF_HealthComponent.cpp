@@ -4,6 +4,8 @@
 #include "Components/STUF_HealthComponent.h"
 #include "GameFramework/Actor.h"
 #include "Logging/StructuredLog.h"
+#include "Engine/World.h"
+#include "TimerManager.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogHealthComponent,All,All);
 
@@ -17,9 +19,7 @@ void USTUF_HealthComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
-	Health = MaxHealth;	
-
-	OnHealtChange.Broadcast(Health);
+	SetHealth(MaxHealth);
 
 	AActor* ComponentOwner = GetOwner();
 
@@ -36,19 +36,42 @@ void USTUF_HealthComponent::BeginPlay()
 // ApplyRadialDamage - срабатывает автоматически когда попвдаем в сферу
 void USTUF_HealthComponent::OnTakeAnyDamage(AActor* DamagedActor, float Damage, const class UDamageType* DamageType, class AController* InstigatedBy, AActor* DamageCauser)
 {
-	if (Damage <= 0.0f || IsDead()) return;
+	if (Damage <= 0.0f || IsDead() || !GetWorld()) return;
 
-	Health = FMath::Clamp(Health-Damage, 0.0f,MaxHealth);
+	SetHealth(Health-Damage);
 
-	OnHealtChange.Broadcast(Health);
+	GetWorld()->GetTimerManager().ClearTimer(HealTimerHandle);
 
 	if (IsDead())
 	{
 		OnDeath.Broadcast();
 	}
+	else if (AutoHeal)
+	{
+		GetWorld()->GetTimerManager().SetTimer(HealTimerHandle,this,&USTUF_HealthComponent::HealUpdate, HealUpdateTime, true, HealDelay);
+	}
+
 	//UE_LOGFMT (LogHealthComponent,Warning,"Damage: {damage}", Damage);
 
 
+}
 
+void USTUF_HealthComponent::HealUpdate()
+{
+
+	SetHealth(Health+HealModifier);
+
+	if (FMath::IsNearlyEqual(Health,MaxHealth,0.5f) && GetWorld())
+	{
+		GetWorld()->GetTimerManager().ClearTimer(HealTimerHandle);
+	}
+
+}
+
+void USTUF_HealthComponent::SetHealth(float NewHealth)
+{
+	Health = FMath::Clamp(NewHealth, 0.0f, MaxHealth);
+
+	OnHealtChange.Broadcast(Health);
 }
 
