@@ -59,7 +59,7 @@ void ASTUF_Character::OnHealthChange(float Health)
 
 void ASTUF_Character::OnGroundLanded(const FHitResult& Hit)
 {
-	const auto FallVelocityZ = -GetCharacterMovement()->Velocity.Z;	// скорость по оси Z
+	const auto FallVelocityZ = -GetVelocity().Z;	// скорость по оси Z
 
 	UE_LOGFMT(LogBaseCharacter, Warning, "On lended: {velocityZ} ",FallVelocityZ );
 
@@ -85,6 +85,8 @@ void ASTUF_Character::Tick(float DeltaTime)
 void ASTUF_Character::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
+
+	check(PlayerInputComponent);
 
 	PlayerInputComponent->BindAxis("MoveForward",this, &ASTUF_Character::MoveForward );
 	PlayerInputComponent->BindAxis("MoveRight", this, &ASTUF_Character::MoveRight );
@@ -149,7 +151,7 @@ void ASTUF_Character::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 
 		GetCharacterMovement()->DisableMovement();
 
-		SetLifeSpan(5.0f);
+		SetLifeSpan(LifaSpanOnDeath);
 
 		if (Controller)
 		{

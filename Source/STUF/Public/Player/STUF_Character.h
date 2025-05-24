@@ -37,6 +37,9 @@ protected:
 	UAnimMontage* DeathAnimMontage;
 
 	UPROPERTY(EditDefaultsOnly, Category = "MyComponents")
+	float LifaSpanOnDeath = 5.0f;
+
+	UPROPERTY(EditDefaultsOnly, Category = "MyComponents")
 	FVector2D LandedDamageVelocity = FVector2D(900.0f, 1500.0f);
 
 	UPROPERTY(EditDefaultsOnly, Category = "MyComponents")
