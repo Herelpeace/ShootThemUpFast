@@ -9,6 +9,7 @@
 #include "Components/STUF_HealthComponent.h"
 #include "Components/TextRenderComponent.h"
 #include "Logging/StructuredLog.h"
+#include "GameFramework/Controller.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogBaseCharacter,All,All);
 
@@ -132,6 +133,11 @@ void ASTUF_Character::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 		GetCharacterMovement()->DisableMovement();
 
 		SetLifeSpan(5.0f);
+
+		if (Controller)
+		{
+			Controller->ChangeState(NAME_Spectating);
+		}
 
 	}
 
