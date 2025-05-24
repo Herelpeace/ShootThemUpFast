@@ -47,12 +47,29 @@ void ASTUF_Character::BeginPlay()
 
 	HealthComponent->OnDeath.AddUObject(this, &ASTUF_Character::OnDeath);
 	HealthComponent->OnHealtChange.AddUObject(this,&ASTUF_Character::OnHealthChange);
+
+	LandedDelegate.AddDynamic(this, &ASTUF_Character::OnGroundLanded);
 }
 
 
 void ASTUF_Character::OnHealthChange(float Health)
 {
 	HealthTextComponent->SetText(FText::FromString(FString::Printf(TEXT("%.0f "),Health)));
+}
+
+void ASTUF_Character::OnGroundLanded(const FHitResult& Hit)
+{
+	const auto FallVelocityZ = -GetCharacterMovement()->Velocity.Z;	// скорость по оси Z
+
+	UE_LOGFMT(LogBaseCharacter, Warning, "On lended: {velocityZ} ",FallVelocityZ );
+
+	if(FallVelocityZ<LandedDamageVelocity.X) return;
+
+	const auto FinalDamage = FMath::GetMappedRangeValueClamped(LandedDamageVelocity, LandedDamage,FallVelocityZ);
+
+	TakeDamage(FinalDamage,FDamageEvent(),nullptr,nullptr);
+
+	UE_LOGFMT(LogBaseCharacter, Warning, "Final damage: {damage} ",FinalDamage );
 }
 
 // Called every frame

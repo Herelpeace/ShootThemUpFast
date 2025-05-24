@@ -36,6 +36,12 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "MyComponents")
 	UAnimMontage* DeathAnimMontage;
 
+	UPROPERTY(EditDefaultsOnly, Category = "MyComponents")
+	FVector2D LandedDamageVelocity = FVector2D(900.0f, 1500.0f);
+
+	UPROPERTY(EditDefaultsOnly, Category = "MyComponents")
+	FVector2D LandedDamage = FVector2D(10.0f, 100.0f);
+
 
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -69,6 +75,9 @@ private:
 	void OnStopRunning();
 	void OnDeath();
 	void OnHealthChange(float Health);
+
+	UFUNCTION() // динамический делегат
+	void OnGroundLanded(const FHitResult& Hit);
 
 
 };
