@@ -6,6 +6,9 @@
 #include "Components/ActorComponent.h"
 #include "STUF_HealthComponent.generated.h"
 
+DECLARE_MULTICAST_DELEGATE(FOnDeath)
+
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnHealthChange, float)
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class STUF_API USTUF_HealthComponent : public UActorComponent
@@ -16,6 +19,13 @@ public:
 	USTUF_HealthComponent();
 
 	float GetHealth() const {return Health;}
+
+	UFUNCTION(BlueprintCallable)
+	bool IsDead() const {return Health<=0.0f;}
+
+	FOnDeath OnDeath;
+	FOnHealthChange OnHealtChange;
+
 
 protected:
 	virtual void BeginPlay() override;

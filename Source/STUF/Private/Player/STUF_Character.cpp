@@ -8,9 +8,9 @@
 #include "Components/STUF_CharacterMovementComponent.h"
 #include "Components/STUF_HealthComponent.h"
 #include "Components/TextRenderComponent.h"
-//#include "Logging/StructuredLog.h"
+#include "Logging/StructuredLog.h"
 
-
+DEFINE_LOG_CATEGORY_STATIC(LogBaseCharacter,All,All);
 
 
 // Sets default values
@@ -40,6 +40,18 @@ void ASTUF_Character::BeginPlay()
 	Super::BeginPlay();	
 	check(HealthComponent);
 	check(HealthTextComponent);
+	check(GetCharacterMovement());
+
+	OnHealthChange(HealthComponent->GetHealth());
+
+	HealthComponent->OnDeath.AddUObject(this, &ASTUF_Character::OnDeath);
+	HealthComponent->OnHealtChange.AddUObject(this,&ASTUF_Character::OnHealthChange);
+}
+
+
+void ASTUF_Character::OnHealthChange(float Health)
+{
+	HealthTextComponent->SetText(FText::FromString(FString::Printf(TEXT("%.0f "),Health)));
 }
 
 // Called every frame
@@ -47,10 +59,7 @@ void ASTUF_Character::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	const auto Health = HealthComponent->GetHealth();
-    HealthTextComponent->SetText(FText::FromString(FString::Printf(TEXT("%.0f "),Health)));
 }
-
 
 
 
@@ -113,4 +122,18 @@ void ASTUF_Character::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 		const auto Degrees = FMath::RadiansToDegrees(AngleBetween);
 		return CrossProduct.IsZero() ? Degrees : Degrees* FMath::Sign(CrossProduct.Z);
 	}
+
+	void ASTUF_Character::OnDeath()
+	{
+		UE_LOGFMT(LogBaseCharacter, Warning,"Plyer is dead! {name}", *GetName());
+
+		PlayAnimMontage(DeathAnimMontage);
+
+		GetCharacterMovement()->DisableMovement();
+
+		SetLifeSpan(5.0f);
+
+	}
+
+
 

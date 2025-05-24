@@ -4,8 +4,6 @@
 #include "Components/STUF_HealthComponent.h"
 #include "GameFramework/Actor.h"
 #include "Logging/StructuredLog.h"
-#include "Dev/STUF_FireDamageType.h"
-#include "Dev/STUF_IceDamageType.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogHealthComponent,All,All);
 
@@ -20,6 +18,8 @@ void USTUF_HealthComponent::BeginPlay()
 	Super::BeginPlay();
 
 	Health = MaxHealth;	
+
+	OnHealtChange.Broadcast(Health);
 
 	AActor* ComponentOwner = GetOwner();
 
@@ -36,18 +36,19 @@ void USTUF_HealthComponent::BeginPlay()
 // ApplyRadialDamage - срабатывает автоматически когда попвдаем в сферу
 void USTUF_HealthComponent::OnTakeAnyDamage(AActor* DamagedActor, float Damage, const class UDamageType* DamageType, class AController* InstigatedBy, AActor* DamageCauser)
 {
-	Health -=Damage;
+	if (Damage <= 0.0f || IsDead()) return;
 
-	UE_LOGFMT (LogHealthComponent,Warning,"Damage: {damage}", Damage);
+	Health = FMath::Clamp(Health-Damage, 0.0f,MaxHealth);
 
-	if (DamageType->IsA<USTUF_FireDamageType>())
+	OnHealtChange.Broadcast(Health);
+
+	if (IsDead())
 	{
-		UE_LOGFMT (LogHealthComponent,Warning,"So hoooooooooot!!!");
+		OnDeath.Broadcast();
 	}
-	else if (DamageType->IsA<USTUF_IceDamageType>())
-	{
-		UE_LOGFMT (LogHealthComponent,Warning,"So coooooooold!!!");
-	}
+	//UE_LOGFMT (LogHealthComponent,Warning,"Damage: {damage}", Damage);
+
+
 
 }
 
