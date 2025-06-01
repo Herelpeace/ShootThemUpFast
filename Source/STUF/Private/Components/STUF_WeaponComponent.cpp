@@ -34,6 +34,11 @@ void USTUF_WeaponComponent::SpawnWeapon()
 	FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, false);
 
 	CurrentWeapon->AttachToComponent(Character->GetMesh(),AttachmentRules,WeaponAttachPointName);
+
+	// указываем кто владеет этим заспавненным актором (классом ASTUF_BaseWeapon)
+	// нужно чтобы получить доступ к камере из класса ASTUF_BaseWeapon, при стрельбе
+	// компоненты автоматически получают владельца, а акторам его нужно указывать вручную
+	CurrentWeapon->SetOwner(Character);
 	
 
 }
