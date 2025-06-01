@@ -34,16 +34,16 @@ protected:
 	float MaxHealth = 100;
 
 	UPROPERTY(EditDefaultsOnly,BlueprintReadWrite,Category = "Heal")
-		bool AutoHeal = true;
+	bool AutoHeal = true;
 
 	UPROPERTY(EditDefaultsOnly,BlueprintReadWrite,Category = "Heal",meta =( EditCondition ="AutoHeal"))
-		float HealUpdateTime = 1.0f;
+	float HealUpdateTime = 1.0f;
 
 	UPROPERTY(EditDefaultsOnly,BlueprintReadWrite,Category = "Heal",meta =( EditCondition ="AutoHeal"))
-		float HealDelay = 3.0f;
+	float HealDelay = 3.0f;
 
 	UPROPERTY(EditDefaultsOnly,BlueprintReadWrite,Category = "Heal",meta =( EditCondition ="AutoHeal"))
-		float HealModifier = 5.0f;
+	float HealModifier = 5.0f;
 
 
 
