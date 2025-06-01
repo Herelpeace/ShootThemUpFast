@@ -10,7 +10,8 @@ class UCameraComponent;
 class USpringArmComponent;
 class USTUF_HealthComponent;
 class UTextRenderComponent;
-class ASTUF_BaseWeapon;
+class USTUF_WeaponComponent;
+
 
 UCLASS()
 class STUF_API ASTUF_Character : public ACharacter
@@ -46,8 +47,8 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "AComponents")
 	FVector2D LandedDamage = FVector2D(10.0f, 100.0f);
 
-	UPROPERTY(EditDefaultsOnly, Category = "AComponents")
-	TSubclassOf<ASTUF_BaseWeapon> WeaponClass;
+	UPROPERTY(VisibleAnywhere,BlueprintReadWrite,Category="AComponent")
+	USTUF_WeaponComponent* WeaponComponent;
 
 
 	// Called when the game starts or when spawned
@@ -85,7 +86,5 @@ private:
 
 	UFUNCTION() // динамический делегат
 	void OnGroundLanded(const FHitResult& Hit);
-
-	void SpawnWeapon();
 
 };

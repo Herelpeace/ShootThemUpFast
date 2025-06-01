@@ -16,10 +16,14 @@ class STUF_API ASTUF_BaseWeapon : public AActor
 public:	
 	ASTUF_BaseWeapon();
 
+	virtual void Fire();
+
 protected:
 	UPROPERTY(VisibleAnywhere,BlueprintReadWrite, Category = "MyComponents")
 	USkeletalMeshComponent* WeaponMesh;
 
 	virtual void BeginPlay() override;
+
+	
 
 };
