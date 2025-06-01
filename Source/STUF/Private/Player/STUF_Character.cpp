@@ -10,6 +10,7 @@
 #include "Components/TextRenderComponent.h"
 #include "Logging/StructuredLog.h"
 #include "GameFramework/Controller.h"
+#include "Weapon/STUF_BaseWeapon.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogBaseCharacter,All,All);
 
@@ -49,6 +50,8 @@ void ASTUF_Character::BeginPlay()
 	HealthComponent->OnHealtChange.AddUObject(this,&ASTUF_Character::OnHealthChange);
 
 	LandedDelegate.AddDynamic(this, &ASTUF_Character::OnGroundLanded);
+
+	SpawnWeapon();
 }
 
 
@@ -160,5 +163,21 @@ void ASTUF_Character::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 
 	}
 
+	// спавним модель оружия
+	void ASTUF_Character::SpawnWeapon()
+	{
+		if(!GetWorld()) return;
+
+		const auto Weapon = GetWorld()->SpawnActor<ASTUF_BaseWeapon>(WeaponClass);
+
+		if (Weapon)
+		{
+			FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, false);
+
+			Weapon->AttachToComponent(GetMesh(),AttachmentRules,"WeaponSocket");
+		}
+
+
+	}
 
 

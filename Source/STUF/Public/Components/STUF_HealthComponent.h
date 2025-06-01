@@ -21,7 +21,7 @@ public:
 	FOnDeathSignature OnDeath;
 	FOnHealthChangeSignature OnHealtChange;
 
-	UFUNCTION(BlueprintCallable, Category = "MyHealth")
+	UFUNCTION(BlueprintCallable, Category = "AComponents")
 	bool IsDead() const {return FMath::IsNearlyZero(Health); }
 
 	float GetHealth() const {return Health;}
@@ -30,7 +30,7 @@ public:
 protected:
 	virtual void BeginPlay() override;
 
-	UPROPERTY(EditDefaultsOnly,BlueprintReadWrite, Category = "MyHealth", meta = (ClapmpMin = "0", ClampMax = "1000"))
+	UPROPERTY(EditDefaultsOnly,BlueprintReadWrite, Category = "AComponents", meta = (ClapmpMin = "0", ClampMax = "1000"))
 	float MaxHealth = 100;
 
 	UPROPERTY(EditDefaultsOnly,BlueprintReadWrite,Category = "Heal")
