@@ -30,7 +30,7 @@ void ASTUF_BaseWeapon::BeginPlay()
 
 void ASTUF_BaseWeapon::Fire()
 {
-	UE_LOGFMT(LogBaseWeapon,Warning, "Fire!");
+	//UE_LOGFMT(LogBaseWeapon,Warning, "Fire!");
 
 	MakeShot();
 }
@@ -39,46 +39,86 @@ void ASTUF_BaseWeapon::MakeShot()
 {
 	if(!GetWorld()) return; 
 
+	FVector TraceStart,TraceEnd;
+
+	// получаем точки между которыми будем рисовать виртуальную линию
+	if(!GetTraceData(TraceStart,TraceEnd)) return;
+
+	FHitResult HitResult;
+	// делаем виртуальную линию выстрела, если пересечние есть то заполнится структура HitResult
+	MakeHit(HitResult,TraceStart,TraceEnd);
+
+	// если пересечеение есть, рисуем линии отладки, идут не так как виртуальная линия выстрела
+	if (HitResult.bBlockingHit)
+	{
+		DrawDebugLine(GetWorld(),GetMazzleWorldLocation(),HitResult.ImpactPoint,FColor::Red,false,3.0f,0.0,3.0f);
+		DrawDebugSphere(GetWorld(),HitResult.ImpactPoint,10.0f,20.0f,FColor::Red,false,3.0f);
+
+		//UE_LOGFMT(LogBaseWeapon,Warning, "Bone: {bone_name}",HitResult.BoneName);
+	}
+	else
+	{
+		DrawDebugLine(GetWorld(),GetMazzleWorldLocation(),TraceEnd,FColor::Red,false,3.0f,0.0,3.0f);
+	}
+
+
+}
+
+// получаем контроллер
+APlayerController* ASTUF_BaseWeapon::GetPlayerController() const
+{
 	const auto Player = Cast<ACharacter>(GetOwner());
+	if(!Player) return nullptr;
 
-	if(!Player) return;
+	return Player->GetController<APlayerController>();
+}
 
-	const auto Controller = Player->GetController<APlayerController>();
-	if(!Controller) return;
+// получаем положение камеры в пространстве
+bool ASTUF_BaseWeapon::GetPlayerViewPoint( FVector& ViewLocation,FRotator& ViewRotation) const
+{
+	const auto Controller = GetPlayerController();
+	if(!Controller) nullptr;
 
 	// получаем позицию камеры и ее ориентацию в пространстве
+	Controller->GetPlayerViewPoint(ViewLocation,ViewRotation);
+	return true;
+}
+
+// получаем положение сокета из которого делаем выстрел
+FVector ASTUF_BaseWeapon::GetMazzleWorldLocation() const
+{
+	return WeaponMesh->GetSocketLocation(MuzzleSocketName);
+}
+
+// получаем точки начала и конца линии 
+bool ASTUF_BaseWeapon::GetTraceData(FVector& TraceStart, FVector& TraceEnd) const
+{
+	// получаем позицию камеры и ее ориентацию в пространстве
+	// GetPlayerViewPoint заполняет переменные которые в неё передают, данными
 	FVector ViewLocation;
 	FRotator ViewRotation;
-	Controller->GetPlayerViewPoint(ViewLocation,ViewRotation);
+	if(!GetPlayerViewPoint(ViewLocation,ViewRotation)) false;
 
-	// трансформация сокета
-	const FTransform SocketTransform = WeaponMesh->GetSocketTransform(MuzzleSocketName);
 
-	const FVector TraceStart = ViewLocation;	//SocketTransform.GetLocation();
+	TraceStart = ViewLocation;	//SocketTransform.GetLocation();
 	const FVector ShootDirection = ViewRotation.Vector(); // ось x камеры, берем за направление выстрела	// SocketTransform.GetRotation().GetForwardVector();
-	const FVector TraceEnd = TraceStart+ShootDirection*TraceMaxDistance;
+	TraceEnd = TraceStart+ShootDirection*TraceMaxDistance;
+	return true;
+
+}
+
+// виртуальная линия выстрела
+void ASTUF_BaseWeapon::MakeHit(FHitResult& HitResult,const FVector& TraceStart, const FVector& TraceEnd)
+{
+	if(!GetWorld()) return;
 
 	// параметр взаимодействия с пересеченными объектами
 	// передаем какие акторы игнорировать 
 	FCollisionQueryParams CollisionParams;
 	CollisionParams.AddIgnoredActor(GetOwner());
 
-	FHitResult HitResult;
 	// проверям пересекает ли линия выстрела какие либо объекты
 	GetWorld()->LineTraceSingleByChannel(HitResult,TraceStart,TraceEnd,ECollisionChannel::ECC_Visibility,CollisionParams);
-
-	if (HitResult.bBlockingHit)
-	{
-		DrawDebugLine(GetWorld(),SocketTransform.GetLocation(),HitResult.ImpactPoint,FColor::Red,false,3.0f,0.0,3.0f);
-
-		DrawDebugSphere(GetWorld(),HitResult.ImpactPoint,10.0f,20.0f,FColor::Red,false,3.0f);
-
-		UE_LOGFMT(LogBaseWeapon,Warning, "Bone: {bone_name}",HitResult.BoneName);
-	}
-	else
-	{
-		DrawDebugLine(GetWorld(),SocketTransform.GetLocation(),TraceEnd,FColor::Red,false,3.0f,0.0,3.0f);
-	}
 
 
 }
