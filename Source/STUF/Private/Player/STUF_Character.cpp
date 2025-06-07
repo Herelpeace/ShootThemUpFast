@@ -10,6 +10,7 @@
 #include "Components/TextRenderComponent.h"
 #include "Components/STUF_WeaponComponent.h"
 #include "Logging/StructuredLog.h"
+#include "Components/CapsuleComponent.h"
 #include "GameFramework/Controller.h"
 
 
@@ -166,6 +167,8 @@ void ASTUF_Character::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 		{
 			Controller->ChangeState(NAME_Spectating);
 		}
+
+		GetCapsuleComponent()->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
 
 	}
 

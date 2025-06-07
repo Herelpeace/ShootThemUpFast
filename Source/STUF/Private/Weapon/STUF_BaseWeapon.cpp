@@ -51,6 +51,7 @@ void ASTUF_BaseWeapon::MakeShot()
 	// если пересечеение есть, рисуем линии отладки, идут не так как виртуальная линия выстрела
 	if (HitResult.bBlockingHit)
 	{
+		MakeDamage(HitResult);
 		DrawDebugLine(GetWorld(),GetMazzleWorldLocation(),HitResult.ImpactPoint,FColor::Red,false,3.0f,0.0,3.0f);
 		DrawDebugSphere(GetWorld(),HitResult.ImpactPoint,10.0f,20.0f,FColor::Red,false,3.0f);
 
@@ -120,5 +121,14 @@ void ASTUF_BaseWeapon::MakeHit(FHitResult& HitResult,const FVector& TraceStart, 
 	// проверям пересекает ли линия выстрела какие либо объекты
 	GetWorld()->LineTraceSingleByChannel(HitResult,TraceStart,TraceEnd,ECollisionChannel::ECC_Visibility,CollisionParams);
 
+}
+
+void ASTUF_BaseWeapon::MakeDamage(const FHitResult &HitResult)
+{
+	const auto DamageActor = HitResult.GetActor();
+
+	if(!DamageActor) return;
+
+	DamageActor->TakeDamage(DamageAmount, FDamageEvent(), GetPlayerController(), this );
 
 }
