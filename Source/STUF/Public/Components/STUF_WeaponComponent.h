@@ -16,7 +16,8 @@ class STUF_API USTUF_WeaponComponent : public UActorComponent
 public:	
 	USTUF_WeaponComponent();
 
-	void Fire();
+	void StartFire();
+	void StopFire();
 
 protected:
 

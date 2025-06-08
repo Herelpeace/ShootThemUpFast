@@ -28,11 +28,21 @@ void ASTUF_BaseWeapon::BeginPlay()
 	check(WeaponMesh);
 }
 
-void ASTUF_BaseWeapon::Fire()
+void ASTUF_BaseWeapon::StartFire()
 {
 	//UE_LOGFMT(LogBaseWeapon,Warning, "Fire!");
 
 	MakeShot();
+
+	GetWorldTimerManager().SetTimer(ShotTimerHandle, this,&ASTUF_BaseWeapon::MakeShot, TimerBetweenShots, true);
+}
+
+void ASTUF_BaseWeapon::StopFire()
+{
+	//UE_LOGFMT(LogBaseWeapon,Warning, "Fire!");
+
+	GetWorldTimerManager().ClearTimer(ShotTimerHandle);
+
 }
 
 void ASTUF_BaseWeapon::MakeShot()
@@ -42,6 +52,7 @@ void ASTUF_BaseWeapon::MakeShot()
 	FVector TraceStart,TraceEnd;
 
 	// получаем точки между которыми будем рисовать виртуальную линию
+	// сдесь же делаем конический разброс
 	if(!GetTraceData(TraceStart,TraceEnd)) return;
 
 	FHitResult HitResult;
@@ -102,7 +113,10 @@ bool ASTUF_BaseWeapon::GetTraceData(FVector& TraceStart, FVector& TraceEnd) cons
 
 
 	TraceStart = ViewLocation;	//SocketTransform.GetLocation();
-	const FVector ShootDirection = ViewRotation.Vector(); // ось x камеры, берем за направление выстрела	// SocketTransform.GetRotation().GetForwardVector();
+	//const FVector ShootDirection = ViewRotation.Vector(); // ось x камеры, берем за направление выстрела	// SocketTransform.GetRotation().GetForwardVector();
+	//конический разброс
+	const auto HalfRad = FMath::DegreesToRadians(BulletSpread);
+	const FVector ShootDirection = FMath::VRandCone(ViewRotation.Vector(), HalfRad );
 	TraceEnd = TraceStart+ShootDirection*TraceMaxDistance;
 	return true;
 

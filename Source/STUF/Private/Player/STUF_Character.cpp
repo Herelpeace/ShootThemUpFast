@@ -106,7 +106,8 @@ void ASTUF_Character::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 	PlayerInputComponent->BindAxis("TurnAround", this, &ASTUF_Character::AddControllerYawInput);
 
 	//стрельба
-	PlayerInputComponent->BindAction("Fire", IE_Pressed, WeaponComponent, &USTUF_WeaponComponent::Fire);
+	PlayerInputComponent->BindAction("Fire", IE_Pressed, WeaponComponent, &USTUF_WeaponComponent::StartFire);
+	PlayerInputComponent->BindAction("Fire", IE_Released, WeaponComponent, &USTUF_WeaponComponent::StopFire);
 
 }
 
@@ -118,7 +119,6 @@ void ASTUF_Character::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 		IsMovingForward = Amount>0.0f;	//нажата клавиша вперед
 		AddMovementInput(GetActorForwardVector(), Amount);
 	}
-
 
 	// вызывается при движении влево/вправо
 	void ASTUF_Character::MoveRight(float Amount)

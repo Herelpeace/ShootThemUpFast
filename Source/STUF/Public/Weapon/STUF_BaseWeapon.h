@@ -16,7 +16,8 @@ class STUF_API ASTUF_BaseWeapon : public AActor
 public:	
 	ASTUF_BaseWeapon();
 
-	virtual void Fire();
+	virtual void StartFire();
+	virtual void StopFire();
 
 protected:
 	UPROPERTY(VisibleAnywhere,BlueprintReadWrite, Category = "MyComponents")
@@ -30,6 +31,12 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly,BlueprintReadWrite);
 	float DamageAmount = 10.0f;
+
+	UPROPERTY(EditDefaultsOnly,BlueprintReadWrite);
+	float TimerBetweenShots = 0.1f;
+
+	UPROPERTY(EditDefaultsOnly,BlueprintReadWrite);
+	float BulletSpread = 1.5f;
 
 	virtual void BeginPlay() override;
 
@@ -47,6 +54,7 @@ protected:
 
 	void MakeDamage(const FHitResult &HitResult);
 
-	
+private:
+	FTimerHandle ShotTimerHandle;
 
 };
