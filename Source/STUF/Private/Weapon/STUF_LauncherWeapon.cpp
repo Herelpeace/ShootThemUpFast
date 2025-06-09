@@ -36,6 +36,8 @@ void ASTUF_LauncherWeapon::MakeShot()
 	if (Projectile)
 	{
 		Projectile->SetShotDirection(Direction);
+		Projectile->SetOwner(GetOwner());
+
 		Projectile->FinishSpawning(SpawnTransform);
 
 	}

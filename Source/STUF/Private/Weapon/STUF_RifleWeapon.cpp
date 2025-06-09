@@ -73,3 +73,12 @@ bool ASTUF_RifleWeapon::GetTraceData(FVector& TraceStart, FVector& TraceEnd) con
 
 }
 
+void ASTUF_RifleWeapon::MakeDamage(const FHitResult &HitResult)
+{
+	const auto DamageActor = HitResult.GetActor();
+
+	if(!DamageActor) return;
+
+	DamageActor->TakeDamage(DamageAmount, FDamageEvent(), GetPlayerController(), this );
+
+}

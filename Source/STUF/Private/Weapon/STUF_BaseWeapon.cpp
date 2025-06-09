@@ -101,12 +101,3 @@ void ASTUF_BaseWeapon::MakeHit(FHitResult& HitResult,const FVector& TraceStart, 
 
 }
 
-void ASTUF_BaseWeapon::MakeDamage(const FHitResult &HitResult)
-{
-	const auto DamageActor = HitResult.GetActor();
-
-	if(!DamageActor) return;
-
-	DamageActor->TakeDamage(DamageAmount, FDamageEvent(), GetPlayerController(), this );
-
-}
