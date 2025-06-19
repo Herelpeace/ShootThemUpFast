@@ -109,6 +109,9 @@ void ASTUF_Character::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 	PlayerInputComponent->BindAction("Fire", IE_Pressed, WeaponComponent, &USTUF_WeaponComponent::StartFire);
 	PlayerInputComponent->BindAction("Fire", IE_Released, WeaponComponent, &USTUF_WeaponComponent::StopFire);
 
+	// смена оружия
+	PlayerInputComponent->BindAction("NextWeapon", IE_Released, WeaponComponent, &USTUF_WeaponComponent::NextWeapon);
+
 }
 
 	// вызывается при движении вперед/ назад
@@ -170,6 +173,7 @@ void ASTUF_Character::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 
 		GetCapsuleComponent()->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
 
+		WeaponComponent->StopFire();
 	}
 
 

@@ -16,32 +16,82 @@ void USTUF_WeaponComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
-	SpawnWeapon();
+	CurrentWeaponIndex = 0;
+
+	SpawnWeapons();
+
+	EquipWeapon(CurrentWeaponIndex);
+}
+
+void USTUF_WeaponComponent::EndPlay(const EEndPlayReason::Type EndPlayReason)
+{
+	CurrentWeapon = nullptr;
+
+	for (auto Weapon : Weapons)
+	{
+		Weapon->DetachFromActor(FDetachmentTransformRules::KeepWorldTransform);
+		Weapon->Destroy();
+	}
+	Weapons.Empty();
+
+	Super::EndPlay(EndPlayReason);
 
 }
 
 // спавним модель оружия
-void USTUF_WeaponComponent::SpawnWeapon()
+void USTUF_WeaponComponent::SpawnWeapons()
 {
-	if(!GetWorld()) return;
-
 	ACharacter* Character = Cast<ACharacter>(GetOwner());
-	if(!Character) return;
+	if(!Character||!GetWorld()) return;
 
-	CurrentWeapon = GetWorld()->SpawnActor<ASTUF_BaseWeapon>(WeaponClass);
-	if (!CurrentWeapon) return;
-	
+	for (auto WeaponClass:WeaponClasses )
+	{
+		auto Weapon = GetWorld()->SpawnActor<ASTUF_BaseWeapon>(WeaponClass);
+		if (!Weapon) continue;
+
+		Weapon->SetOwner(Character);
+		Weapons.Add(Weapon);
+
+		AttachWeaponToSocket(Weapon,Character->GetMesh(), WeaponArmorySocketName);
+	}
+
+}
+
+
+void USTUF_WeaponComponent::AttachWeaponToSocket(ASTUF_BaseWeapon* Weapon, USceneComponent* SceneComponent, const FName& SocketName)
+{
+	if (!Weapon||!SceneComponent) return;
+
 	FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, false);
 
-	CurrentWeapon->AttachToComponent(Character->GetMesh(),AttachmentRules,WeaponAttachPointName);
+	 Weapon->AttachToComponent(SceneComponent,AttachmentRules,SocketName);
 
 	// указываем кто владеет этим заспавненным актором (классом ASTUF_BaseWeapon)
 	// нужно чтобы получить доступ к камере из класса ASTUF_BaseWeapon, при стрельбе
 	// компоненты автоматически получают владельца, а акторам его нужно указывать вручную
-	CurrentWeapon->SetOwner(Character);
-	
+	//CurrentWeapon->SetOwner(Character);
 
 }
+
+void USTUF_WeaponComponent::EquipWeapon(int32 WeaponIndex)
+{
+	ACharacter* Character = Cast<ACharacter>(GetOwner());
+	if(!Character) return;
+
+	if (CurrentWeapon)
+	{
+		CurrentWeapon->StopFire();
+
+		// присоединяем к спине персонажа
+		AttachWeaponToSocket(CurrentWeapon,Character->GetMesh(), WeaponArmorySocketName);
+	}
+
+	CurrentWeapon = Weapons[WeaponIndex];
+	
+	// присоединяем оружие к руке
+	AttachWeaponToSocket(CurrentWeapon,Character->GetMesh(),WeaponEquipSocketName);
+}
+
 
 void USTUF_WeaponComponent::StartFire()
 {
@@ -56,5 +106,11 @@ void USTUF_WeaponComponent::StopFire()
 
 	CurrentWeapon->StopFire();
 
+}
+
+void USTUF_WeaponComponent::NextWeapon()
+{
+	CurrentWeaponIndex = (CurrentWeaponIndex+1)%Weapons.Num();
+	EquipWeapon(CurrentWeaponIndex);
 }
 

@@ -18,21 +18,35 @@ public:
 
 	void StartFire();
 	void StopFire();
+	void NextWeapon();
 
 protected:
 
 	UPROPERTY(EditDefaultsOnly, Category = "AComponents")
-	TSubclassOf<ASTUF_BaseWeapon> WeaponClass;
+	TArray<TSubclassOf<ASTUF_BaseWeapon>> WeaponClasses;
 
 	UPROPERTY(EditDefaultsOnly, Category = "AComponents")
-	FName WeaponAttachPointName = "WeaponSocket";
+	FName WeaponEquipSocketName = "WeaponSocket";
+
+	UPROPERTY(EditDefaultsOnly, Category = "AComponents")
+	FName WeaponArmorySocketName = "ArmorySocket";
 
 	virtual void BeginPlay() override;
+	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 
 private:
 	UPROPERTY()
 	ASTUF_BaseWeapon* CurrentWeapon = nullptr;
 
-	void SpawnWeapon();
+	UPROPERTY()
+	TArray<ASTUF_BaseWeapon*> Weapons;
+
+	int32 CurrentWeaponIndex = 0;
+
+	void SpawnWeapons();
+
+	void AttachWeaponToSocket(ASTUF_BaseWeapon* Weapon, USceneComponent* SceneComponent, const FName& SocketName);
+
+	void EquipWeapon(int32 WeaponIndex);
 
 };
