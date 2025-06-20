@@ -4,6 +4,10 @@
 #include "Components/STUF_WeaponComponent.h"
 #include "Weapon/STUF_BaseWeapon.h"
 #include "GameFramework/Character.h"
+#include "Animations/STUF_EquipFinishedAnimNotify.h"
+#include "Logging/StructuredLog.h"
+
+DEFINE_LOG_CATEGORY_STATIC(LogWeaponComponent,All,All);
 
 USTUF_WeaponComponent::USTUF_WeaponComponent()
 {
@@ -17,10 +21,12 @@ void USTUF_WeaponComponent::BeginPlay()
 	Super::BeginPlay();
 
 	CurrentWeaponIndex = 0;
+	InitAnimations();
 
 	SpawnWeapons();
 
 	EquipWeapon(CurrentWeaponIndex);
+
 }
 
 void USTUF_WeaponComponent::EndPlay(const EEndPlayReason::Type EndPlayReason)
@@ -90,6 +96,9 @@ void USTUF_WeaponComponent::EquipWeapon(int32 WeaponIndex)
 	
 	// присоединяем оружие к руке
 	AttachWeaponToSocket(CurrentWeapon,Character->GetMesh(),WeaponEquipSocketName);
+
+	// анимация смены оружия
+	PlayAnimMontage(EquipAnimMontage);
 }
 
 
@@ -114,3 +123,43 @@ void USTUF_WeaponComponent::NextWeapon()
 	EquipWeapon(CurrentWeaponIndex);
 }
 
+void USTUF_WeaponComponent::PlayAnimMontage(UAnimMontage* Animation)
+{
+	ACharacter* Character = Cast<ACharacter>(GetOwner());
+	if(!Character) return;
+
+	Character->PlayAnimMontage(Animation);
+
+}
+
+void USTUF_WeaponComponent::InitAnimations()
+{
+	if(!EquipAnimMontage) return;
+
+	const auto NotifyEvents = EquipAnimMontage->Notifies;
+
+	for (auto NotifyEvent:NotifyEvents)
+	{
+		auto EquipFinishedNotify = Cast<USTUF_EquipFinishedAnimNotify>(NotifyEvent.Notify);
+
+		if (EquipFinishedNotify)
+		{
+			EquipFinishedNotify->OnNotified.AddUObject(this, &USTUF_WeaponComponent::OnEquipFinished);
+			break;
+		}
+
+	}
+}
+
+
+void USTUF_WeaponComponent::OnEquipFinished(USkeletalMeshComponent* MeshComponent)
+{
+	ACharacter* Character = Cast<ACharacter>(GetOwner());
+	if(!Character) return;
+
+	if (Character->GetMesh() == MeshComponent)
+	{
+		UE_LOGFMT(LogWeaponComponent,Warning,"EquipFinished ");
+	}
+
+}

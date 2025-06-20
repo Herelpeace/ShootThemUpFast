@@ -17,7 +17,8 @@ public class STUF : ModuleRules
 			"STUF/Public/Components", 
 			"STUF/Public/Dev",
             "STUF/Public/Weapon",
-            "STUF/Public/UI"
+            "STUF/Public/UI",
+            "STUF/Public/Animations"
                                                  });
 
 		// Uncomment if you are using Slate UI
