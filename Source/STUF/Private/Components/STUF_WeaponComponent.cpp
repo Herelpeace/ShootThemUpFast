@@ -97,14 +97,18 @@ void USTUF_WeaponComponent::EquipWeapon(int32 WeaponIndex)
 	// присоединяем оружие к руке
 	AttachWeaponToSocket(CurrentWeapon,Character->GetMesh(),WeaponEquipSocketName);
 
+	EquipAnimInProgress = true;
+
 	// анимация смены оружия
 	PlayAnimMontage(EquipAnimMontage);
+
+		
 }
 
 
 void USTUF_WeaponComponent::StartFire()
 {
-	if(!CurrentWeapon) return;
+	if(!CanFire()) return;
 
 	CurrentWeapon->StartFire();
 }
@@ -118,7 +122,9 @@ void USTUF_WeaponComponent::StopFire()
 }
 
 void USTUF_WeaponComponent::NextWeapon()
-{
+{ 
+	if (!CanEquip()) return;
+
 	CurrentWeaponIndex = (CurrentWeaponIndex+1)%Weapons.Num();
 	EquipWeapon(CurrentWeaponIndex);
 }
@@ -155,11 +161,21 @@ void USTUF_WeaponComponent::InitAnimations()
 void USTUF_WeaponComponent::OnEquipFinished(USkeletalMeshComponent* MeshComponent)
 {
 	ACharacter* Character = Cast<ACharacter>(GetOwner());
-	if(!Character) return;
+	if(!Character || MeshComponent!=Character->GetMesh() ) return;
 
-	if (Character->GetMesh() == MeshComponent)
-	{
-		UE_LOGFMT(LogWeaponComponent,Warning,"EquipFinished ");
-	}
+		EquipAnimInProgress = false;
+
+}
+
+bool USTUF_WeaponComponent::CanFire() const
+{
+	return CurrentWeapon && !EquipAnimInProgress;
+
+}
+
+
+bool USTUF_WeaponComponent::CanEquip() const
+{
+	return !EquipAnimInProgress;
 
 }
