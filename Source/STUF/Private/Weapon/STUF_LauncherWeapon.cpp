@@ -13,7 +13,7 @@ void ASTUF_LauncherWeapon::StartFire()
 
 void ASTUF_LauncherWeapon::MakeShot()
 {
-	if(!GetWorld()) return; 
+	if(!GetWorld() || IsAmmoEmpty()) return; 
 
 	FVector TraceStart,TraceEnd;
 
@@ -41,5 +41,7 @@ void ASTUF_LauncherWeapon::MakeShot()
 		Projectile->FinishSpawning(SpawnTransform);
 
 	}
+
+	DecreaseAmmo();
 
 }

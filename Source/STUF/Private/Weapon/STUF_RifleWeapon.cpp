@@ -24,13 +24,21 @@ void ASTUF_RifleWeapon::StopFire()
 
 void ASTUF_RifleWeapon::MakeShot()
 {
-	if(!GetWorld()) return; 
+	if (!GetWorld() || IsAmmoEmpty())
+	{
+		StopFire();
+		return;
+	}
 
 	FVector TraceStart,TraceEnd;
 
 	// получаем точки между которыми будем рисовать виртуальную линию
 	// сдесь же делаем конический разброс
-	if(!GetTraceData(TraceStart,TraceEnd)) return;
+	if(!GetTraceData(TraceStart,TraceEnd)) 
+	{
+		StopFire();
+		return;
+	}
 
 	FHitResult HitResult;
 	// делаем виртуальную линию выстрела, если пересечние есть то заполнится структура HitResult
@@ -50,7 +58,7 @@ void ASTUF_RifleWeapon::MakeShot()
 		DrawDebugLine(GetWorld(),GetMazzleWorldLocation(),TraceEnd,FColor::Red,false,3.0f,0.0,3.0f);
 	}
 
-
+	DecreaseAmmo();
 }
 
 // получаем точки начала и конца линии 

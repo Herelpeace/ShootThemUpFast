@@ -26,21 +26,20 @@ void ASTUF_BaseWeapon::BeginPlay()
 	Super::BeginPlay();
 
 	check(WeaponMesh);
+
+	CurrentAmmo = DefaultAmmo;
 }
 
 void ASTUF_BaseWeapon::StartFire()
 {
-
 }
 
 void ASTUF_BaseWeapon::StopFire()
 {
-
 }
 
 void ASTUF_BaseWeapon::MakeShot()
 {
-
 }
 
 // получаем контроллер
@@ -101,3 +100,42 @@ void ASTUF_BaseWeapon::MakeHit(FHitResult& HitResult,const FVector& TraceStart, 
 
 }
 
+void ASTUF_BaseWeapon::DecreaseAmmo()
+{
+	CurrentAmmo.Bullets--;
+	LogAmmo();
+
+	if (IsClipsEmpty() && !IsAmmoEmpty())
+	{
+		ChangeClip();
+	}
+}
+
+bool ASTUF_BaseWeapon::IsAmmoEmpty() const
+{
+	return !CurrentAmmo.Infinite && CurrentAmmo.Clips == 0 &&  CurrentAmmo.Bullets == 0;
+}
+
+bool ASTUF_BaseWeapon::IsClipsEmpty() const
+{
+	return CurrentAmmo.Bullets == 0;
+
+}
+
+void ASTUF_BaseWeapon::ChangeClip()
+{
+	CurrentAmmo.Bullets= DefaultAmmo.Bullets;
+	if (!CurrentAmmo.Infinite)
+	{
+		CurrentAmmo.Clips--;
+	}
+
+	UE_LOGFMT(LogBaseWeapon,Warning," -------------- Change Clip --------------");
+}
+
+void ASTUF_BaseWeapon::LogAmmo()
+{
+	FString AmmoInfo = "Ammo: "+ FString::FromInt(CurrentAmmo.Bullets )+ " / ";
+	AmmoInfo+= CurrentAmmo.Infinite ? "Infinite": FString::FromInt(CurrentAmmo.Clips);
+	UE_LOGFMT(LogBaseWeapon,Warning," {0}",AmmoInfo);
+}
