@@ -102,12 +102,20 @@ void ASTUF_BaseWeapon::MakeHit(FHitResult& HitResult,const FVector& TraceStart, 
 
 void ASTUF_BaseWeapon::DecreaseAmmo()
 {
+	if (CurrentAmmo.Bullets == 0)
+	{
+		UE_LOGFMT(LogBaseWeapon, Warning,"No more clips ");
+		//UE_LOG(LogBaseWeapon, Warnin,TEXT("No more clips "));
+		return;
+	}
+
 	CurrentAmmo.Bullets--;
 	LogAmmo();
 
 	if (IsClipsEmpty() && !IsAmmoEmpty())
 	{
-		ChangeClip();
+		StopFire();
+		OnClipEmpty.Broadcast();
 	}
 }
 
@@ -124,13 +132,23 @@ bool ASTUF_BaseWeapon::IsClipsEmpty() const
 
 void ASTUF_BaseWeapon::ChangeClip()
 {
-	CurrentAmmo.Bullets= DefaultAmmo.Bullets;
 	if (!CurrentAmmo.Infinite)
 	{
+		if (CurrentAmmo.Clips == 0)
+		{
+			UE_LOGFMT(LogBaseWeapon, Warning,"No more clips ");
+			return;
+		}
 		CurrentAmmo.Clips--;
 	}
+	CurrentAmmo.Bullets= DefaultAmmo.Bullets;
 
 	UE_LOGFMT(LogBaseWeapon,Warning," -------------- Change Clip --------------");
+}
+
+bool ASTUF_BaseWeapon::CanReload() const
+{
+	return CurrentAmmo.Bullets< DefaultAmmo.Bullets && CurrentAmmo.Clips>0;
 }
 
 void ASTUF_BaseWeapon::LogAmmo()

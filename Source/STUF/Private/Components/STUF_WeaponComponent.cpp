@@ -13,7 +13,6 @@ DEFINE_LOG_CATEGORY_STATIC(LogWeaponComponent,All,All);
 USTUF_WeaponComponent::USTUF_WeaponComponent()
 {
 	PrimaryComponentTick.bCanEverTick = false;
-
 }
 
 
@@ -27,7 +26,6 @@ void USTUF_WeaponComponent::BeginPlay()
 	SpawnWeapons();
 
 	EquipWeapon(CurrentWeaponIndex);
-
 }
 
 void USTUF_WeaponComponent::EndPlay(const EEndPlayReason::Type EndPlayReason)
@@ -42,7 +40,6 @@ void USTUF_WeaponComponent::EndPlay(const EEndPlayReason::Type EndPlayReason)
 	Weapons.Empty();
 
 	Super::EndPlay(EndPlayReason);
-
 }
 
 // спавним модель оружия
@@ -56,12 +53,12 @@ void USTUF_WeaponComponent::SpawnWeapons()
 		auto Weapon = GetWorld()->SpawnActor<ASTUF_BaseWeapon>(OneWeaponData.WeaponClass);
 		if (!Weapon) continue;
 
+		Weapon->OnClipEmpty.AddUObject(this,&USTUF_WeaponComponent::OnEmptyClip);
 		Weapon->SetOwner(Character);
 		Weapons.Add(Weapon);
 
 		AttachWeaponToSocket(Weapon,Character->GetMesh(), WeaponArmorySocketName);
 	}
-
 }
 
 
@@ -77,7 +74,6 @@ void USTUF_WeaponComponent::AttachWeaponToSocket(ASTUF_BaseWeapon* Weapon, UScen
 	// нужно чтобы получить доступ к камере из класса ASTUF_BaseWeapon, при стрельбе
 	// компоненты автоматически получают владельца, а акторам его нужно указывать вручную
 	//CurrentWeapon->SetOwner(Character);
-
 }
 
 void USTUF_WeaponComponent::EquipWeapon(int32 WeaponIndex)
@@ -118,9 +114,7 @@ void USTUF_WeaponComponent::EquipWeapon(int32 WeaponIndex)
 	EquipAnimInProgress = true;
 
 	// анимация смены оружия
-	PlayAnimMontage(EquipAnimMontage);
-
-		
+	PlayAnimMontage(EquipAnimMontage);	
 }
 
 
@@ -136,7 +130,6 @@ void USTUF_WeaponComponent::StopFire()
 	if(!CurrentWeapon) return;
 
 	CurrentWeapon->StopFire();
-
 }
 
 void USTUF_WeaponComponent::NextWeapon()
@@ -153,7 +146,6 @@ void USTUF_WeaponComponent::PlayAnimMontage(UAnimMontage* Animation)
 	if(!Character) return;
 
 	Character->PlayAnimMontage(Animation);
-
 }
 
 void USTUF_WeaponComponent::InitAnimations()
@@ -170,8 +162,6 @@ void USTUF_WeaponComponent::InitAnimations()
 		if (!ReloadFinishedNotify) continue;
 
 		ReloadFinishedNotify->OnNotified.AddUObject(this, &USTUF_WeaponComponent::OnReloadFinished);
-
-
 	}
 }
 
@@ -206,13 +196,27 @@ bool USTUF_WeaponComponent::CanEquip() const
 
 bool USTUF_WeaponComponent::CanReload() const
 {
-	return CurrentWeapon && !EquipAnimInProgress && !ReloadAnimInProgress;
+	return CurrentWeapon && !EquipAnimInProgress && !ReloadAnimInProgress && CurrentWeapon->CanReload();
 }
 
 void USTUF_WeaponComponent::Reload()
 {
+	ChangeClip();
+}
+
+void USTUF_WeaponComponent::OnEmptyClip()
+{
+	ChangeClip();
+}
+
+void USTUF_WeaponComponent::ChangeClip()
+{
 	if(!CanReload()) return;
+
+	CurrentWeapon->StopFire();
+	CurrentWeapon->ChangeClip();
 
 	ReloadAnimInProgress = true;
 	PlayAnimMontage(CurrentReloadAnimMontage);
+
 }

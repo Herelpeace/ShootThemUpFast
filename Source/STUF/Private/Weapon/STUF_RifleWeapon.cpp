@@ -9,9 +9,9 @@ void ASTUF_RifleWeapon::StartFire()
 {
 	//UE_LOGFMT(LogBaseWeapon,Warning, "Fire!");
 
-	MakeShot();
-
 	GetWorldTimerManager().SetTimer(ShotTimerHandle, this,&ASTUF_RifleWeapon::MakeShot, TimerBetweenShots, true);
+
+	MakeShot();
 }
 
 void ASTUF_RifleWeapon::StopFire()
