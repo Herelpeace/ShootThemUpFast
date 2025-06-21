@@ -110,7 +110,8 @@ void ASTUF_Character::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 	PlayerInputComponent->BindAction("Fire", IE_Released, WeaponComponent, &USTUF_WeaponComponent::StopFire);
 
 	// смена оружия
-	PlayerInputComponent->BindAction("NextWeapon", IE_Released, WeaponComponent, &USTUF_WeaponComponent::NextWeapon);
+	PlayerInputComponent->BindAction("NextWeapon", IE_Pressed, WeaponComponent, &USTUF_WeaponComponent::NextWeapon);
+	PlayerInputComponent->BindAction("Reload", IE_Pressed, WeaponComponent, &USTUF_WeaponComponent::Reload);
 
 }
 

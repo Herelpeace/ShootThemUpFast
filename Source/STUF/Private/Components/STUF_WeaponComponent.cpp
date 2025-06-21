@@ -50,9 +50,9 @@ void USTUF_WeaponComponent::SpawnWeapons()
 	ACharacter* Character = Cast<ACharacter>(GetOwner());
 	if(!Character||!GetWorld()) return;
 
-	for (auto WeaponClass:WeaponClasses )
+	for (auto OneWeaponData:WeaponData )
 	{
-		auto Weapon = GetWorld()->SpawnActor<ASTUF_BaseWeapon>(WeaponClass);
+		auto Weapon = GetWorld()->SpawnActor<ASTUF_BaseWeapon>(OneWeaponData.WeaponClass);
 		if (!Weapon) continue;
 
 		Weapon->SetOwner(Character);
@@ -81,6 +81,12 @@ void USTUF_WeaponComponent::AttachWeaponToSocket(ASTUF_BaseWeapon* Weapon, UScen
 
 void USTUF_WeaponComponent::EquipWeapon(int32 WeaponIndex)
 {
+	if (WeaponIndex < 0 || WeaponIndex >= WeaponData.Num())
+	{
+		// если структура с оружием не заполнена, выходим из функции
+		return;
+	}
+
 	ACharacter* Character = Cast<ACharacter>(GetOwner());
 	if(!Character) return;
 
@@ -93,7 +99,18 @@ void USTUF_WeaponComponent::EquipWeapon(int32 WeaponIndex)
 	}
 
 	CurrentWeapon = Weapons[WeaponIndex];
+	// CurrentReloadAnimMontage = WeaponData[WeaponIndex].ReloadAnimMontage;
 	
+	// пробегаем по массиву со структурами оружия, анимации WeaponData
+	// ищем там структуру которая будет соотвествовать нашему оружию
+	// через CurrentWeapon получаем структуру с оружием которая соответствует текущему оружию
+	// далее обращаемся к этой структуре и получаем оттуда поле анимации
+	const auto CurrentWeaponData = WeaponData.FindByPredicate([&](const FWeaponData& Data)	//
+		{return Data.WeaponClass == CurrentWeapon->GetClass();} );							//
+
+	// устанавливаем анимацию, на анимацию их найденной структуры
+	CurrentReloadAnimMontage = CurrentWeaponData ? CurrentWeaponData->ReloadAnimMontage: nullptr;
+
 	// присоединяем оружие к руке
 	AttachWeaponToSocket(CurrentWeapon,Character->GetMesh(),WeaponEquipSocketName);
 
@@ -153,7 +170,6 @@ void USTUF_WeaponComponent::InitAnimations()
 			EquipFinishedNotify->OnNotified.AddUObject(this, &USTUF_WeaponComponent::OnEquipFinished);
 			break;
 		}
-
 	}
 }
 
@@ -164,18 +180,20 @@ void USTUF_WeaponComponent::OnEquipFinished(USkeletalMeshComponent* MeshComponen
 	if(!Character || MeshComponent!=Character->GetMesh() ) return;
 
 		EquipAnimInProgress = false;
-
 }
 
 bool USTUF_WeaponComponent::CanFire() const
 {
 	return CurrentWeapon && !EquipAnimInProgress;
-
 }
 
 
 bool USTUF_WeaponComponent::CanEquip() const
 {
 	return !EquipAnimInProgress;
+}
 
+void USTUF_WeaponComponent::Reload()
+{
+	PlayAnimMontage(CurrentReloadAnimMontage);
 }

@@ -8,6 +8,19 @@
 
 class ASTUF_BaseWeapon;
 
+// хранит класс оружия и его анимацию перезарядки
+USTRUCT(BlueprintType)
+struct FWeaponData
+{
+	GENERATED_USTRUCT_BODY()
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "AComponents")
+	TSubclassOf<ASTUF_BaseWeapon> WeaponClass;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "AComponents")
+	UAnimMontage* ReloadAnimMontage;
+};
+
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class STUF_API USTUF_WeaponComponent : public UActorComponent
 {
@@ -19,11 +32,12 @@ public:
 	void StartFire();
 	void StopFire();
 	void NextWeapon();
+	void Reload();
 
 protected:
 
 	UPROPERTY(EditDefaultsOnly, Category = "AComponents")
-	TArray<TSubclassOf<ASTUF_BaseWeapon>> WeaponClasses;
+	TArray<FWeaponData> WeaponData;
 
 	UPROPERTY(EditDefaultsOnly, Category = "AComponents")
 	FName WeaponEquipSocketName = "WeaponSocket";
@@ -43,6 +57,9 @@ private:
 
 	UPROPERTY()
 	TArray<ASTUF_BaseWeapon*> Weapons;
+
+	UPROPERTY()
+	UAnimMontage* CurrentReloadAnimMontage = nullptr;
 
 	int32 CurrentWeaponIndex = 0;
 
