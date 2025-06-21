@@ -4,22 +4,12 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
+#include "STUFCoreTypes.h"
 #include "STUF_WeaponComponent.generated.h"
 
 class ASTUF_BaseWeapon;
 
-// хранит класс оружия и его анимацию перезарядки
-USTRUCT(BlueprintType)
-struct FWeaponData
-{
-	GENERATED_USTRUCT_BODY()
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "AComponents")
-	TSubclassOf<ASTUF_BaseWeapon> WeaponClass;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "AComponents")
-	UAnimMontage* ReloadAnimMontage;
-};
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class STUF_API USTUF_WeaponComponent : public UActorComponent
@@ -90,23 +80,6 @@ private:
 
 	void ChangeClip();
 
-	template <typename T>
-	T* FindNotifyByClass(UAnimSequenceBase* Animation)
-	{
-		if(!Animation) return nullptr;
 
-		const auto NotifyEvents = Animation->Notifies;
-
-		for (auto NotifyEvent:NotifyEvents)
-		{
-			auto AnimNotify = Cast<T>(NotifyEvent.Notify);
-
-			if (AnimNotify)
-			{
-				return AnimNotify;
-			}
-		}
-		return nullptr;
-	}
 
 };

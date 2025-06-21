@@ -18,7 +18,6 @@ ASTUF_BaseWeapon::ASTUF_BaseWeapon()
 
 	WeaponMesh = CreateDefaultSubobject<USkeletalMeshComponent>("WeaponMesh");
 	SetRootComponent(WeaponMesh);
-
 }
 
 void ASTUF_BaseWeapon::BeginPlay()
@@ -26,6 +25,8 @@ void ASTUF_BaseWeapon::BeginPlay()
 	Super::BeginPlay();
 
 	check(WeaponMesh);
+	checkf(DefaultAmmo.Bullets>0, TEXT("Bullets count not be set 0"));
+	checkf(DefaultAmmo.Clips>0, TEXT("Clips count not be set 0"));
 
 	CurrentAmmo = DefaultAmmo;
 }

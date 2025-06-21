@@ -4,11 +4,10 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
+#include "STUFCoreTypes.h"
 #include "STUF_HealthComponent.generated.h"
 
-DECLARE_MULTICAST_DELEGATE(FOnDeathSignature);
 
-DECLARE_MULTICAST_DELEGATE_OneParam(FOnHealthChangeSignature, float);
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class STUF_API USTUF_HealthComponent : public UActorComponent

@@ -6,9 +6,12 @@
 #include "GameFramework/Character.h"
 #include "Animations/STUF_EquipFinishedAnimNotify.h"
 #include "Animations/STUF_ReloadFinishedAnimNotify.h"
+#include "Animations/AnimUtils.h"
 #include "Logging/StructuredLog.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogWeaponComponent,All,All);
+
+constexpr static int32 WeaponNum = 2;
 
 USTUF_WeaponComponent::USTUF_WeaponComponent()
 {
@@ -19,6 +22,8 @@ USTUF_WeaponComponent::USTUF_WeaponComponent()
 void USTUF_WeaponComponent::BeginPlay()
 {
 	Super::BeginPlay();
+
+	checkf(WeaponData.Num() == WeaponNum, TEXT("Our character Weapon not set"));
 
 	CurrentWeaponIndex = 0;
 	InitAnimations();
@@ -150,16 +155,25 @@ void USTUF_WeaponComponent::PlayAnimMontage(UAnimMontage* Animation)
 
 void USTUF_WeaponComponent::InitAnimations()
 {
-	auto EquipFinishedNotify = FindNotifyByClass<USTUF_EquipFinishedAnimNotify>(EquipAnimMontage);
+	auto EquipFinishedNotify = AnimUtils::FindNotifyByClass<USTUF_EquipFinishedAnimNotify>(EquipAnimMontage);
 	if (EquipFinishedNotify)
 	{
 		EquipFinishedNotify->OnNotified.AddUObject(this, &USTUF_WeaponComponent::OnEquipFinished);
 	}
+	else
+	{
+		UE_LOGFMT(LogWeaponComponent, Warning,"USTUF_EquipFinishedAnimNotify not found in EquipAnimMontage!");
+		checkNoEntry();
+	}
 
 	for (auto OneWeaponData : WeaponData)
 	{
-		auto ReloadFinishedNotify = FindNotifyByClass<USTUF_ReloadFinishedAnimNotify>(OneWeaponData.ReloadAnimMontage);
-		if (!ReloadFinishedNotify) continue;
+		auto ReloadFinishedNotify = AnimUtils::FindNotifyByClass<USTUF_ReloadFinishedAnimNotify>(OneWeaponData.ReloadAnimMontage);
+		if (!ReloadFinishedNotify)
+		{
+			UE_LOGFMT(LogWeaponComponent, Warning,"USTUF_ReloadFinishedAnimNotify not found in ReloadAnimMontage!");
+			checkNoEntry();
+		}
 
 		ReloadFinishedNotify->OnNotified.AddUObject(this, &USTUF_WeaponComponent::OnReloadFinished);
 	}
