@@ -19,6 +19,8 @@ void USTUF_HealthComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
+	checkf(MaxHealth>0, TEXT("MaxHealth not be 0"));
+
 	SetHealth(MaxHealth);
 
 	AActor* ComponentOwner = GetOwner();
@@ -27,8 +29,6 @@ void USTUF_HealthComponent::BeginPlay()
 	{
 		ComponentOwner->OnTakeAnyDamage.AddDynamic(this, &USTUF_HealthComponent::OnTakeAnyDamage); 
 	}
-
-	
 }
 
 // в BeginPlay мы подписаны на делегат OnTakeAnyDamage, в классе DamageActor функция ApplyRadialDamage 
@@ -52,8 +52,6 @@ void USTUF_HealthComponent::OnTakeAnyDamage(AActor* DamagedActor, float Damage, 
 	}
 
 	//UE_LOGFMT (LogHealthComponent,Warning,"Damage: {damage}", Damage);
-
-
 }
 
 void USTUF_HealthComponent::HealUpdate()
