@@ -20,18 +20,37 @@ float USTUF_PlayerHUDWidget::GetHealthPercent() const
 	return HealthComponent->GetHealthPercent();
 }
 
-bool USTUF_PlayerHUDWidget::GetWeaponUIData(FWeaponUIData& UIData) const
+bool USTUF_PlayerHUDWidget::GetCurrentWeaponUIData(FWeaponUIData& UIData) const
 {
-	// получаем доступ к компоненту HealthComponent и вызывем у него функцию получения здоровья в процентах
+	const auto WeaponComponent = GetWeaponComponent();
+
+	if(!WeaponComponent) return false;
+
+	return WeaponComponent->GetCurrentWeaponUIData(UIData);
+
+}
+
+bool USTUF_PlayerHUDWidget::GetCurrentWeaponAmmoData(FAmmoData& AmmoData) const
+{
+	const auto WeaponComponent = GetWeaponComponent();
+
+	if(!WeaponComponent) return false;
+
+	return WeaponComponent->GetCurrentWeaponAmmoData(AmmoData);
+
+}
+
+USTUF_WeaponComponent* USTUF_PlayerHUDWidget::GetWeaponComponent() const
+{
+	// получаем доступ к компоненту 
 	const auto Player = GetOwningPlayerPawn();
-	if(!Player) return false;
+	if(!Player) return nullptr;
 
 	const auto Component = Player->GetComponentByClass(USTUF_WeaponComponent::StaticClass());
 
 	const auto WeaponComponent = Cast<USTUF_WeaponComponent>(Component);
 
-	if(!WeaponComponent) return false;
+	return WeaponComponent;
 
-	return WeaponComponent->GetWeaponUIData(UIData);
 
 }

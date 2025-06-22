@@ -234,11 +234,22 @@ void USTUF_WeaponComponent::ChangeClip()
 	PlayAnimMontage(CurrentReloadAnimMontage);
 }
 
-bool USTUF_WeaponComponent::GetWeaponUIData(FWeaponUIData& UIData) const
+bool USTUF_WeaponComponent::GetCurrentWeaponUIData(FWeaponUIData& UIData) const
 {
 	if (CurrentWeapon)
 	{
 		UIData = CurrentWeapon->GetUIData();
+		return true;
+	}
+
+	return false;
+}
+
+bool USTUF_WeaponComponent::GetCurrentWeaponAmmoData(FAmmoData& AmmoData) const
+{
+	if (CurrentWeapon)
+	{
+		AmmoData = CurrentWeapon->GetAmmoData();
 		return true;
 	}
 
