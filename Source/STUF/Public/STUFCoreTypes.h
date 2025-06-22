@@ -8,6 +8,7 @@
 
 // for STUF_BaseWeapon.h
 //----------------------------------------------------------------------------------------------------------
+// количество патронов и магазинов для оружия
 
 DECLARE_MULTICAST_DELEGATE(FOnClipEmptySignature);
 
@@ -30,19 +31,38 @@ struct FAmmoData
 
 // for STUF_WeaponComponent.h
 //----------------------------------------------------------------------------------------------------------
+// хранит класс оружия и его анимацию перезарядки
+
 class ASTUF_BaseWeapon;
 
-// хранит класс оружия и его анимацию перезарядки
 USTRUCT(BlueprintType)
 struct FWeaponData
 {
 	GENERATED_USTRUCT_BODY()
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "AComponents")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "MyConfigWeapon")
 	TSubclassOf<ASTUF_BaseWeapon> WeaponClass;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "AComponents")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "MyConfigWeapon")
 	UAnimMontage* ReloadAnimMontage;
+};
+
+
+// for STUF_BaseWeapon.h
+//----------------------------------------------------------------------------------------------------------
+// хранит иконку оружия и иконку прицела для него 
+
+USTRUCT(BlueprintType)
+struct FWeaponUIData
+{
+	GENERATED_USTRUCT_BODY()
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category ="MyConfigWeaponUI")
+	UTexture2D* MainIcon;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "MyConfigWeaponUI")
+	UTexture2D* CrossHairIcon;
+
 };
 
 

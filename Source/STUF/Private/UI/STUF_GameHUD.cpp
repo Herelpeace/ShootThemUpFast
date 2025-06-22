@@ -9,7 +9,7 @@ void ASTUF_GameHUD::DrawHUD()
 {
 	Super::DrawHUD();
 
-	DrawCrossHair();
+	//DrawCrossHair();
 
 }
 

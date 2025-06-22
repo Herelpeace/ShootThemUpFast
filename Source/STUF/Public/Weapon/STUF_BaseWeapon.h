@@ -8,11 +8,7 @@
 #include "STUF_BaseWeapon.generated.h"
 
 
-
 class USkeletalMeshComponent;
-
-
-
 
 UCLASS()
 class STUF_API ASTUF_BaseWeapon : public AActor
@@ -30,6 +26,8 @@ public:
 	void ChangeClip();
 	bool CanReload() const;
 
+	FWeaponUIData GetUIData() const {return UIData;}
+
 protected:
 	UPROPERTY(VisibleAnywhere,BlueprintReadWrite, Category = "MyComponents")
 	USkeletalMeshComponent* WeaponMesh;
@@ -42,6 +40,9 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "MyComponents")
 	FAmmoData DefaultAmmo{15,10, false};
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "MyWeaponUIImage")
+	FWeaponUIData UIData;
 
 	virtual void BeginPlay() override;
 

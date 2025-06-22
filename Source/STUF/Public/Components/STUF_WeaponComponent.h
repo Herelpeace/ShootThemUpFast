@@ -23,6 +23,8 @@ public:
 	void StopFire();
 	void NextWeapon();
 	void Reload();
+	
+	bool GetWeaponUIData(FWeaponUIData& UIData) const;
 
 protected:
 

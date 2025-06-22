@@ -225,12 +225,22 @@ void USTUF_WeaponComponent::OnEmptyClip()
 
 void USTUF_WeaponComponent::ChangeClip()
 {
-	if(!CanReload()) return;
+	if (!CanReload()) return;
 
 	CurrentWeapon->StopFire();
 	CurrentWeapon->ChangeClip();
 
 	ReloadAnimInProgress = true;
 	PlayAnimMontage(CurrentReloadAnimMontage);
+}
 
+bool USTUF_WeaponComponent::GetWeaponUIData(FWeaponUIData& UIData) const
+{
+	if (CurrentWeapon)
+	{
+		UIData = CurrentWeapon->GetUIData();
+		return true;
+	}
+
+	return false;
 }
