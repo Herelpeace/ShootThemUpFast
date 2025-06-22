@@ -4,12 +4,13 @@
 #include "UI/STUF_PlayerHUDWidget.h"
 #include "Components/STUF_HealthComponent.h"
 #include "Components/STUF_WeaponComponent.h"
+#include "STUUtils.h"
 
 float USTUF_PlayerHUDWidget::GetHealthPercent() const
 {
 	// получаем доступ к компоненту HealthComponent и вызывем у него функцию получения здоровья в процентах
 
-	const auto HealthComponent = GetHealthComponent();
+	const auto HealthComponent = STUUtils::GetSTUFPlayerComponent<USTUF_HealthComponent>(GetOwningPlayerPawn());
 
 	if(!HealthComponent) return 0.0f;
 
@@ -18,7 +19,7 @@ float USTUF_PlayerHUDWidget::GetHealthPercent() const
 
 bool USTUF_PlayerHUDWidget::GetCurrentWeaponUIData(FWeaponUIData& UIData) const
 {
-	const auto WeaponComponent = GetWeaponComponent();
+	const auto WeaponComponent = STUUtils::GetSTUFPlayerComponent<USTUF_WeaponComponent>(GetOwningPlayerPawn());
 
 	if(!WeaponComponent) return false;
 
@@ -27,12 +28,32 @@ bool USTUF_PlayerHUDWidget::GetCurrentWeaponUIData(FWeaponUIData& UIData) const
 
 bool USTUF_PlayerHUDWidget::GetCurrentWeaponAmmoData(FAmmoData& AmmoData) const
 {
-	const auto WeaponComponent = GetWeaponComponent();
+	const auto WeaponComponent = STUUtils::GetSTUFPlayerComponent<USTUF_WeaponComponent>(GetOwningPlayerPawn());
 
 	if(!WeaponComponent) return false;
 
 	return WeaponComponent->GetCurrentWeaponAmmoData(AmmoData);
 }
+
+
+bool  USTUF_PlayerHUDWidget::IsPlayerAlive() const
+{
+	const auto HealthComponent = STUUtils::GetSTUFPlayerComponent<USTUF_HealthComponent>(GetOwningPlayerPawn());
+
+	return HealthComponent && !HealthComponent->IsDead();
+}
+
+bool  USTUF_PlayerHUDWidget::IsPlayerSpectating() const
+{
+	// получаем контроллер игрока
+	const auto Controller = GetOwningPlayer();
+
+	return Controller && Controller->GetStateName() == NAME_Spectating;
+}
+
+
+// функции до создания одной шаблонной функции
+/*
 
 USTUF_WeaponComponent* USTUF_PlayerHUDWidget::GetWeaponComponent() const
 {
@@ -45,22 +66,6 @@ USTUF_WeaponComponent* USTUF_PlayerHUDWidget::GetWeaponComponent() const
 	const auto WeaponComponent = Cast<USTUF_WeaponComponent>(Component);
 
 	return WeaponComponent;
-}
-
-
-bool  USTUF_PlayerHUDWidget::IsPlayerAlive() const
-{
-	const auto HealthComponent = GetHealthComponent();
-
-	return HealthComponent && !HealthComponent->IsDead();
-}
-
-bool  USTUF_PlayerHUDWidget::IsPlayerSpectating() const
-{
-	// получаем контроллер игрока
-	const auto Controller = GetOwningPlayer();
-
-	return Controller && Controller->GetStateName() == NAME_Spectating;
 }
 	
 USTUF_HealthComponent* USTUF_PlayerHUDWidget::GetHealthComponent() const
@@ -75,3 +80,7 @@ USTUF_HealthComponent* USTUF_PlayerHUDWidget::GetHealthComponent() const
 
 	return HealthComponent;
 }
+*/
+//
+
+

@@ -111,7 +111,6 @@ void ASTUF_BaseWeapon::DecreaseAmmo()
 	}
 
 	CurrentAmmo.Bullets--;
-	LogAmmo();
 
 	if (IsClipsEmpty() && !IsAmmoEmpty())
 	{
