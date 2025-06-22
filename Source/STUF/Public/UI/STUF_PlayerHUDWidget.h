@@ -8,6 +8,7 @@
 #include "STUF_PlayerHUDWidget.generated.h"
 
 class USTUF_WeaponComponent;
+class USTUF_HealthComponent;
 
 UCLASS()
 class STUF_API USTUF_PlayerHUDWidget : public UUserWidget
@@ -23,7 +24,15 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "MyFunctionUI")
 	bool GetCurrentWeaponAmmoData(FAmmoData& AmmoData) const;
+
+	UFUNCTION(BlueprintCallable, Category = "MyFunctionUI")
+	bool IsPlayerAlive() const;
+
+	UFUNCTION(BlueprintCallable, Category ="MyFunctionUI")
+	bool IsPlayerSpectating() const;
 	
 private:
 	USTUF_WeaponComponent* GetWeaponComponent() const;
+	USTUF_HealthComponent* GetHealthComponent() const;
+	
 };
