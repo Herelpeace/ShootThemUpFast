@@ -10,6 +10,9 @@ UCLASS()
 class STUF_API ASTUF_HealthPickup : public ASTUF_BasePickup
 {
 	GENERATED_BODY()
+
+private:
+	virtual bool GivePickupTo(APawn* PlayerPawn) override;
 	
 };
 
