@@ -10,7 +10,9 @@
 //----------------------------------------------------------------------------------------------------------
 // количество патронов и магазинов для оружия
 
-DECLARE_MULTICAST_DELEGATE(FOnClipEmptySignature);
+class ASTUF_BaseWeapon;
+
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnClipEmptySignature,ASTUF_BaseWeapon*);
 
 USTRUCT(BlueprintType)
 struct FAmmoData
