@@ -28,6 +28,10 @@ public:
 
 	float GetHealth() const {return Health;}
 
+	bool TryToAddHealth(float HealthAmount);
+
+	bool IsHealthFull() const;
+
 
 protected:
 	virtual void BeginPlay() override;

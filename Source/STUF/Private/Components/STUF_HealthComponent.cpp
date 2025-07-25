@@ -59,7 +59,7 @@ void USTUF_HealthComponent::HealUpdate()
 
 	SetHealth(Health+HealModifier);
 
-	if (FMath::IsNearlyEqual(Health,MaxHealth,0.5f) && GetWorld())
+	if (IsHealthFull() && GetWorld())
 	{
 		GetWorld()->GetTimerManager().ClearTimer(HealTimerHandle);
 	}
@@ -73,3 +73,15 @@ void USTUF_HealthComponent::SetHealth(float NewHealth)
 	OnHealtChange.Broadcast(Health);
 }
 
+bool USTUF_HealthComponent::TryToAddHealth(float HealthAmount)
+{
+	if(IsDead()||IsHealthFull()) return false;
+
+	SetHealth(Health + HealthAmount);
+	return true;
+}
+
+bool USTUF_HealthComponent::IsHealthFull() const
+{
+	return FMath::IsNearlyEqual(Health,MaxHealth,0.5f);
+}
