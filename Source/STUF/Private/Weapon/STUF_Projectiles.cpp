@@ -17,6 +17,7 @@ ASTUF_Projectiles::ASTUF_Projectiles()
 	CollisionComponent->InitSphereRadius(5.0f);
 	CollisionComponent->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
 	CollisionComponent->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Block);
+	CollisionComponent->bReturnMaterialOnMove = true; // включаем передачу физического материала
 	SetRootComponent(CollisionComponent);
 	
 

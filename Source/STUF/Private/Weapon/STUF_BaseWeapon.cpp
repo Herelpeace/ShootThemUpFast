@@ -96,6 +96,9 @@ void ASTUF_BaseWeapon::MakeHit(FHitResult& HitResult,const FVector& TraceStart, 
 	FCollisionQueryParams CollisionParams;
 	CollisionParams.AddIgnoredActor(GetOwner());
 
+	// включаем чтобы при столкновении записывался физический материал (иначе эффекты работать не будут)
+	CollisionParams.bReturnPhysicalMaterial = true;
+
 	// проверям пересекает ли линия выстрела какие либо объекты
 	GetWorld()->LineTraceSingleByChannel(HitResult,TraceStart,TraceEnd,ECollisionChannel::ECC_Visibility,CollisionParams);
 

@@ -7,6 +7,7 @@
 #include "STU_WeaponFXComponent.generated.h"
 
 class UNiagaraSystem;
+class UPhysicalMaterial;
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class STUF_API USTU_WeaponFXComponent : public UActorComponent
@@ -20,7 +21,10 @@ void PlayImpactFx(const FHitResult& Hit);
 
 protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite,Category = "VFX")
-	UNiagaraSystem* Effect;
+	UNiagaraSystem* DefaultEffect;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite,Category = "VFX")
+	TMap<UPhysicalMaterial*,UNiagaraSystem*> EffectsMap;
 
 		
 };
