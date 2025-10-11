@@ -8,6 +8,7 @@
 
 class USphereComponent;
 class UProjectileMovementComponent;
+class USTU_WeaponFXComponent;
 
 UCLASS()
 class STUF_API ASTUF_Projectiles : public AActor
@@ -27,6 +28,10 @@ protected:
 
 	UPROPERTY(VisibleDefaultsOnly, Category = "Weapon")
 	UProjectileMovementComponent* MovementComponent;
+
+	// переменная для Niagara эффекта
+	UPROPERTY(VisibleAnywhere, Category = "VFX")
+	USTU_WeaponFXComponent* WeaponFXComponent;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Weapon")
 	float DamageRadius = 200.0f;

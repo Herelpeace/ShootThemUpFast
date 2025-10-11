@@ -4,6 +4,20 @@
 #include "Weapon/STUF_RifleWeapon.h"
 #include "Engine/World.h"
 #include "DrawDebugHelpers.h"
+#include "Weapon/Components/STU_WeaponFXComponent.h"
+
+ASTUF_RifleWeapon::ASTUF_RifleWeapon()
+{
+	WeaponFXComponent = CreateDefaultSubobject<USTU_WeaponFXComponent>("WeaponFXComponent");
+
+}
+
+void ASTUF_RifleWeapon::BeginPlay()
+{
+	Super::BeginPlay();
+
+	check(WeaponFXComponent);
+}
 
 void ASTUF_RifleWeapon::StartFire()
 {
@@ -48,14 +62,17 @@ void ASTUF_RifleWeapon::MakeShot()
 	if (HitResult.bBlockingHit)
 	{
 		MakeDamage(HitResult);
-		DrawDebugLine(GetWorld(),GetMazzleWorldLocation(),HitResult.ImpactPoint,FColor::Red,false,3.0f,0.0,3.0f);
-		DrawDebugSphere(GetWorld(),HitResult.ImpactPoint,10.0f,20.0f,FColor::Red,false,3.0f);
+		//DrawDebugLine(GetWorld(),GetMazzleWorldLocation(),HitResult.ImpactPoint,FColor::Red,false,3.0f,0.0,3.0f);
+		//DrawDebugSphere(GetWorld(),HitResult.ImpactPoint,10.0f,20.0f,FColor::Red,false,3.0f);
+
+		//проигрываем эффект Niagara
+		WeaponFXComponent->PlayImpactFx(HitResult);
 
 		//UE_LOGFMT(LogBaseWeapon,Warning, "Bone: {bone_name}",HitResult.BoneName);
 	}
 	else
 	{
-		DrawDebugLine(GetWorld(),GetMazzleWorldLocation(),TraceEnd,FColor::Red,false,3.0f,0.0,3.0f);
+		//DrawDebugLine(GetWorld(),GetMazzleWorldLocation(),TraceEnd,FColor::Red,false,3.0f,0.0,3.0f);
 	}
 
 	DecreaseAmmo();

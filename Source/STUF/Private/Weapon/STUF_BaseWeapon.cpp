@@ -170,7 +170,7 @@ bool ASTUF_BaseWeapon::TryToAddAmmo(int32 ClipsAmount)
 	if (IsAmmoEmpty())
 	{
 		UE_LOGFMT(LogBaseWeapon,Warning," Ammo was empty!");
-		CurrentAmmo.Clips = FMath::Clamp(CurrentAmmo.Clips+ClipsAmount, 0, DefaultAmmo.Clips+1);
+		CurrentAmmo.Clips = FMath::Clamp(ClipsAmount, 0, DefaultAmmo.Clips+1);
 		
 		// делаем перезарядку
 		OnClipEmpty.Broadcast(this);

@@ -8,7 +8,7 @@ public class STUF : ModuleRules
 	{
 		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 	
-		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore" });
+		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore","Niagara" });
 
 		PrivateDependencyModuleNames.AddRange(new string[] {  });
 
@@ -19,7 +19,8 @@ public class STUF : ModuleRules
             "STUF/Public/Weapon",
             "STUF/Public/UI",
             "STUF/Public/Animations",
-            "STUF/Public/Pickups"
+            "STUF/Public/Pickups",
+            "STUF/Public/Weapon/Components"
                                                  });
 
 		// Uncomment if you are using Slate UI
