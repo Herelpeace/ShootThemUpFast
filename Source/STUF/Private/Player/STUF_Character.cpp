@@ -50,6 +50,7 @@ void ASTUF_Character::BeginPlay()
 	check(HealthTextComponent);
 	check(GetCharacterMovement());
 	check(WeaponComponent);
+	check(GetMesh());
 
 	OnHealthChange(HealthComponent->GetHealth());
 
@@ -159,9 +160,9 @@ void ASTUF_Character::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 
 	void ASTUF_Character::OnDeath()
 	{
-		UE_LOGFMT(LogBaseCharacter, Warning,"Plyer is dead! {name}", *GetName());
+		// UE_LOGFMT(LogBaseCharacter, Warning,"Plyer is dead! {name}", *GetName());
 
-		PlayAnimMontage(DeathAnimMontage);
+		// PlayAnimMontage(DeathAnimMontage);
 
 		GetCharacterMovement()->DisableMovement();
 
@@ -175,8 +176,10 @@ void ASTUF_Character::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 		GetCapsuleComponent()->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
 
 		WeaponComponent->StopFire();
+
+		GetMesh()->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+		GetMesh()->SetSimulatePhysics(true);
+
 	}
-
-
 
 
