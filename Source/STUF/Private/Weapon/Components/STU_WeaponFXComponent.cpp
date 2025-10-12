@@ -4,6 +4,8 @@
 #include "Weapon/Components/STU_WeaponFXComponent.h"
 #include "NiagaraFunctionLibrary.h"
 #include "PhysicalMaterials/PhysicalMaterial.h"
+#include "Kismet//GameplayStatics.h"
+#include "Components/DecalComponent.h"
 
 USTU_WeaponFXComponent::USTU_WeaponFXComponent()
 {
@@ -14,19 +16,36 @@ USTU_WeaponFXComponent::USTU_WeaponFXComponent()
 // проигрываем эффект ниагары
 void USTU_WeaponFXComponent::PlayImpactFx(const FHitResult& Hit)
 {
-	auto Effect = DefaultEffect;
+	auto ImpactData = DefaultImpactData;
 
 	if (Hit.PhysMaterial.IsValid())
 	{
 		const auto PhysMat = Hit.PhysMaterial.Get();
 
 		//проверяем есть ли в нашем контейнере эффект для нашего физического материала
-		if (EffectsMap.Contains(PhysMat))
+		if (ImpactDataMap.Contains(PhysMat))
 		{
-			Effect = EffectsMap [PhysMat];
+			ImpactData = ImpactDataMap [PhysMat];
 
 		}
 	}
 
-	UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(),Effect, Hit.ImpactPoint, Hit.ImpactNormal.Rotation());
+	// spawn Niagara
+	UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(),	//
+		ImpactData.NiagaraEffect,								//
+		Hit.ImpactPoint,										//
+		Hit.ImpactNormal.Rotation());
+
+	// spawn Decals
+	auto DecalComponent = UGameplayStatics::SpawnDecalAtLocation(GetWorld(),	//
+	ImpactData.DecalData.Material,						//
+	ImpactData.DecalData.Size,							//
+	Hit.ImpactPoint,									//
+	Hit.ImpactNormal.Rotation()	);
+
+	if (DecalComponent)
+	{
+		DecalComponent->SetFadeOut(ImpactData.DecalData.LifeTime, ImpactData.DecalData.FadeOutTime);
+	}
+
 }
