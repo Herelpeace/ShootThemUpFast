@@ -3,9 +3,12 @@
 
 #include "Components/STUF_HealthComponent.h"
 #include "GameFramework/Actor.h"
+#include "GameFramework/Pawn.h"
+#include "GameFramework/Controller.h"
 #include "Logging/StructuredLog.h"
 #include "Engine/World.h"
 #include "TimerManager.h"
+#include "Camera/CameraShakeBase.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogHealthComponent,All,All);
 
@@ -51,6 +54,9 @@ void USTUF_HealthComponent::OnTakeAnyDamage(AActor* DamagedActor, float Damage, 
 		GetWorld()->GetTimerManager().SetTimer(HealTimerHandle,this,&USTUF_HealthComponent::HealUpdate, HealUpdateTime, true, HealDelay);
 	}
 
+	// тряска камеры
+	PlayCameraShake();
+
 	//UE_LOGFMT (LogHealthComponent,Warning,"Damage: {damage}", Damage);
 }
 
@@ -84,4 +90,18 @@ bool USTUF_HealthComponent::TryToAddHealth(float HealthAmount)
 bool USTUF_HealthComponent::IsHealthFull() const
 {
 	return FMath::IsNearlyEqual(Health,MaxHealth,0.5f);
+}
+
+void USTUF_HealthComponent::PlayCameraShake()
+{
+	if (IsDead()) return;
+
+	const auto Player = Cast<APawn>(GetOwner());
+	if(!Player) return;
+
+	const auto Controller = Player->GetController<APlayerController>();
+	if(!Controller || !Controller->PlayerCameraManager ) return;
+
+	Controller->PlayerCameraManager->StartCameraShake(CameraShake);
+
 }
