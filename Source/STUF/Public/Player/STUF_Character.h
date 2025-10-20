@@ -82,7 +82,7 @@ private:
 	void OnStartRunning();
 	void OnStopRunning();
 	void OnDeath();
-	void OnHealthChange(float Health);
+	void OnHealthChange(float Health, float HealthDelta);
 
 	UFUNCTION() // динамический делегат
 	void OnGroundLanded(const FHitResult& Hit);

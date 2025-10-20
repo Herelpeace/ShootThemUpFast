@@ -52,7 +52,7 @@ void ASTUF_Character::BeginPlay()
 	check(WeaponComponent);
 	check(GetMesh());
 
-	OnHealthChange(HealthComponent->GetHealth());
+	OnHealthChange(HealthComponent->GetHealth(), 0.0f);
 
 	HealthComponent->OnDeath.AddUObject(this, &ASTUF_Character::OnDeath);
 	HealthComponent->OnHealtChange.AddUObject(this,&ASTUF_Character::OnHealthChange);
@@ -62,7 +62,7 @@ void ASTUF_Character::BeginPlay()
 }
 
 
-void ASTUF_Character::OnHealthChange(float Health)
+void ASTUF_Character::OnHealthChange(float Health, float HealthDelta)
 {
 	HealthTextComponent->SetText(FText::FromString(FString::Printf(TEXT("%.0f "),Health)));
 }

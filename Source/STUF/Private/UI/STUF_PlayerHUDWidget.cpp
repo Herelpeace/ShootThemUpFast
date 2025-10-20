@@ -6,6 +6,32 @@
 #include "Components/STUF_WeaponComponent.h"
 #include "STUUtils.h"
 
+bool USTUF_PlayerHUDWidget::Initialize()
+{
+	// получаем доступ к компоненту HealthComponent и вызывем у него функцию получения здоровья в процентах
+
+	const auto HealthComponent = STUUtils::GetSTUFPlayerComponent<USTUF_HealthComponent>(GetOwningPlayerPawn());
+
+	if (HealthComponent)
+	{
+		HealthComponent->OnHealtChange.AddUObject(this, &USTUF_PlayerHUDWidget::OnHealthChanged);
+	}
+
+	return Super::Initialize();
+}
+
+
+void USTUF_PlayerHUDWidget::OnHealthChanged(float Health, float HealthDelta)
+{
+	if (HealthDelta < 0.0f)
+	{
+		OnTakeDamage();
+	}
+
+}
+
+
+
 float USTUF_PlayerHUDWidget::GetHealthPercent() const
 {
 	// получаем доступ к компоненту HealthComponent и вызывем у него функцию получения здоровья в процентах
