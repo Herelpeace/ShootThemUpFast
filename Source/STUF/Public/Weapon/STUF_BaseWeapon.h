@@ -9,6 +9,8 @@
 
 
 class USkeletalMeshComponent;
+class UNiagaraSystem;
+class UNiagaraComponent;
 
 UCLASS()
 class STUF_API ASTUF_BaseWeapon : public AActor
@@ -47,6 +49,9 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "MyWeaponUIImage")
 	FWeaponUIData UIData;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "VFX")
+	UNiagaraSystem* MuzzleFX;
+
 	virtual void BeginPlay() override;
 
 	virtual void MakeShot();
@@ -66,6 +71,8 @@ protected:
 	bool IsClipsEmpty() const;
 	void LogAmmo();
 	bool IsAmmoFull() const;
+
+	UNiagaraComponent* SpawnMuzzleFX();
 	
 	
 private:

@@ -8,6 +8,8 @@
 #include "DrawDebugHelpers.h"
 #include "GameFramework/Character.h"
 #include "GameFramework/Controller.h"
+#include "NiagaraFunctionLibrary.h"
+#include "NiagaraComponent.h"
 
 
 DEFINE_LOG_CATEGORY_STATIC(LogBaseWeapon,All,All);
@@ -204,3 +206,18 @@ bool ASTUF_BaseWeapon::TryToAddAmmo(int32 ClipsAmount)
 	return true;
 
 }
+
+// спавнит эффект Niagara для оружия, возвращает указатель на созданный эффект
+UNiagaraComponent* ASTUF_BaseWeapon::SpawnMuzzleFX()
+{
+	return UNiagaraFunctionLibrary::SpawnSystemAttached (//
+		MuzzleFX,						//
+		WeaponMesh,						//
+		MuzzleSocketName,				//
+		FVector::ZeroVector,			//
+		FRotator::ZeroRotator,			//
+		EAttachLocation::SnapToTarget,	//
+		true );
+
+}
+

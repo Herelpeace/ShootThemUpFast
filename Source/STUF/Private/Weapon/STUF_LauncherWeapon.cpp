@@ -44,4 +44,6 @@ void ASTUF_LauncherWeapon::MakeShot()
 
 	DecreaseAmmo();
 
+	SpawnMuzzleFX();
+
 }

@@ -5,6 +5,7 @@
 #include "Engine/World.h"
 #include "DrawDebugHelpers.h"
 #include "Weapon/Components/STU_WeaponFXComponent.h"
+#include "NiagaraComponent.h"
 
 ASTUF_RifleWeapon::ASTUF_RifleWeapon()
 {
@@ -23,6 +24,8 @@ void ASTUF_RifleWeapon::StartFire()
 {
 	//UE_LOGFMT(LogBaseWeapon,Warning, "Fire!");
 
+	InitMuzzleFX();
+
 	GetWorldTimerManager().SetTimer(ShotTimerHandle, this,&ASTUF_RifleWeapon::MakeShot, TimerBetweenShots, true);
 
 	MakeShot();
@@ -33,6 +36,7 @@ void ASTUF_RifleWeapon::StopFire()
 	//UE_LOGFMT(LogBaseWeapon,Warning, "Fire!");
 
 	GetWorldTimerManager().ClearTimer(ShotTimerHandle);
+	SetMuzzleFXVisibility(false);
 
 }
 
@@ -106,4 +110,27 @@ void ASTUF_RifleWeapon::MakeDamage(const FHitResult &HitResult)
 
 	DamageActor->TakeDamage(DamageAmount, FDamageEvent(), GetPlayerController(), this );
 
+}
+
+	// спавнит Niagara систему, выставляет видимость
+void ASTUF_RifleWeapon::InitMuzzleFX()
+{
+	if (!MuzzleFXComponent)		// если система не заспавнена, спавним её
+	{
+		MuzzleFXComponent = SpawnMuzzleFX();
+	}
+
+	SetMuzzleFXVisibility(true);
+
+}
+
+	// выставляет фллаг видимости эффекта
+void ASTUF_RifleWeapon::SetMuzzleFXVisibility(bool Visible)
+{
+	if (MuzzleFXComponent)
+	{
+		MuzzleFXComponent->SetPaused(!Visible);				// воспроизведение эффекта на паузу
+		MuzzleFXComponent->SetVisibility(Visible, true);	// рендер эффекта
+		
+	}
 }

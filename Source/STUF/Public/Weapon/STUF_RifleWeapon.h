@@ -7,6 +7,7 @@
 #include "STUF_RifleWeapon.generated.h"
 
 class USTU_WeaponFXComponent;
+class UNiagaraComponent;
 
 UCLASS()
 class STUF_API ASTUF_RifleWeapon : public ASTUF_BaseWeapon
@@ -42,5 +43,14 @@ protected:
 
 private:
 	FTimerHandle ShotTimerHandle;
+
+	UPROPERTY();
+	UNiagaraComponent* MuzzleFXComponent;
+
+	// спавнит Niagara систему, выставляет видимость
+	void InitMuzzleFX();
+
+	// выставляет фллаг видимости эффекта
+	void SetMuzzleFXVisibility(bool Visible);
 
 };
