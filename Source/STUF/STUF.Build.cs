@@ -14,7 +14,9 @@ public class STUF : ModuleRules
 			"Engine", 
 			"InputCore",
 			"Niagara",
-			"PhysicsCore"
+            "GameplayTasks",
+            "NavigationSystem",
+            "PhysicsCore"
 		});
 
 		PrivateDependencyModuleNames.AddRange(new string[] {  });
@@ -28,7 +30,8 @@ public class STUF : ModuleRules
             "STUF/Public/Animations",
             "STUF/Public/Pickups",
             "STUF/Public/Weapon/Components",
-            "STUF/Public/AI"
+            "STUF/Public/AI",
+            "STUF/Public/AI/Tasks"
                                                  });
 
 		// Uncomment if you are using Slate UI
