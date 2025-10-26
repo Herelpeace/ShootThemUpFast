@@ -6,6 +6,7 @@
 #include "DrawDebugHelpers.h"
 #include "Weapon/Components/STU_WeaponFXComponent.h"
 #include "NiagaraComponent.h"
+#include "NiagaraFunctionLibrary.h"
 
 ASTUF_RifleWeapon::ASTUF_RifleWeapon()
 {
@@ -62,9 +63,15 @@ void ASTUF_RifleWeapon::MakeShot()
 	// делаем виртуальную линию выстрела, если пересечние есть то заполнится структура HitResult
 	MakeHit(HitResult,TraceStart,TraceEnd);
 
+	// для эффекта трассировки
+	FVector TraceFXEnd = TraceEnd; 
+
 	// если пересечеение есть, рисуем линии отладки, идут не так как виртуальная линия выстрела
 	if (HitResult.bBlockingHit)
 	{
+		// если есть попадание то изменяем конечную точку для эффекта трассировки
+		TraceFXEnd = HitResult.ImpactPoint;
+
 		MakeDamage(HitResult);
 		//DrawDebugLine(GetWorld(),GetMazzleWorldLocation(),HitResult.ImpactPoint,FColor::Red,false,3.0f,0.0,3.0f);
 		//DrawDebugSphere(GetWorld(),HitResult.ImpactPoint,10.0f,20.0f,FColor::Red,false,3.0f);
@@ -74,10 +81,9 @@ void ASTUF_RifleWeapon::MakeShot()
 
 		//UE_LOGFMT(LogBaseWeapon,Warning, "Bone: {bone_name}",HitResult.BoneName);
 	}
-	else
-	{
-		//DrawDebugLine(GetWorld(),GetMazzleWorldLocation(),TraceEnd,FColor::Red,false,3.0f,0.0,3.0f);
-	}
+
+	// рисуем трассировку
+	SpawnTraceFX(GetMazzleWorldLocation(),TraceFXEnd); 
 
 	DecreaseAmmo();
 }
@@ -134,3 +140,17 @@ void ASTUF_RifleWeapon::SetMuzzleFXVisibility(bool Visible)
 		
 	}
 }
+
+void ASTUF_RifleWeapon::SpawnTraceFX (const FVector& TraceStart, FVector& TraceEnd)
+{
+	const auto TraceFXComponent = UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), TraceFX,TraceStart);
+	if (TraceFXComponent )
+	{
+		// в переменную конечной точки эффекта трассировки записываем конечную точку выстрела
+		TraceFXComponent->SetNiagaraVariableVec3(TraceTargetName, TraceEnd);
+	}
+
+}
+
+
+

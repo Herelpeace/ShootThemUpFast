@@ -8,6 +8,7 @@
 
 class USTU_WeaponFXComponent;
 class UNiagaraComponent;
+class UNiagaraSystem;
 
 UCLASS()
 class STUF_API ASTUF_RifleWeapon : public ASTUF_BaseWeapon
@@ -20,10 +21,6 @@ public:
 	virtual void StopFire() override;
 
 protected:
-	// переменная для Niagara эффекта
-	UPROPERTY(VisibleAnywhere, Category = "VFX")
-	USTU_WeaponFXComponent* WeaponFXComponent;
-
 	UPROPERTY(EditDefaultsOnly,BlueprintReadWrite);
 	float TimerBetweenShots = 0.1f;
 
@@ -32,6 +29,16 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly,BlueprintReadWrite);
 	float DamageAmount = 10.0f;
+
+	// переменная для Niagara эффекта
+	UPROPERTY(VisibleAnywhere, Category = "VFX")
+	USTU_WeaponFXComponent* WeaponFXComponent;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "VFX")
+	UNiagaraSystem* TraceFX;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "VFX")
+	FString TraceTargetName = "TraceTarget";
 
 	virtual void BeginPlay() override;
 
@@ -52,5 +59,7 @@ private:
 
 	// выставляет фллаг видимости эффекта
 	void SetMuzzleFXVisibility(bool Visible);
+
+	void SpawnTraceFX (const FVector& TraceStart, FVector& TraceEnd);
 
 };
