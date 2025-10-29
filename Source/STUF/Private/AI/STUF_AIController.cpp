@@ -4,7 +4,24 @@
 
 #include "AI/STUF_AIController.h"
 #include "AI/STUF_AICharacter.h"
+#include "Components/STUF_AIPerceptionComponent.h"
 
+ASTUF_AIController::ASTUF_AIController()
+{
+	// создвем наш AIPercaptionComponent
+	STUF_AIPerceptionComponent = CreateDefaultSubobject<USTUF_AIPerceptionComponent>("STUF_AIPerceptionComponent");
+	SetPerceptionComponent(*STUF_AIPerceptionComponent);
+}
+
+void ASTUF_AIController::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+
+	const auto AimActor = STUF_AIPerceptionComponent->GetClosestEnemy();
+
+	// указываем AI какого актора держать в фокусе
+	SetFocus(AimActor );
+}
 
 void ASTUF_AIController::OnPossess(APawn* InPawn)
 {
@@ -19,3 +36,4 @@ void ASTUF_AIController::OnPossess(APawn* InPawn)
 	}
 
 }
+

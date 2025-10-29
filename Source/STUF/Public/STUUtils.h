@@ -7,7 +7,7 @@ class STUUtils
 {
 public:
 	template<typename T>
-	static T* GetSTUFPlayerComponent(APawn* PlayerPawn)
+	static T* GetSTUFPlayerComponent(AActor* PlayerPawn)
 	{
 		// получаем доступ к компоненту 
 		if(!PlayerPawn) return nullptr;
