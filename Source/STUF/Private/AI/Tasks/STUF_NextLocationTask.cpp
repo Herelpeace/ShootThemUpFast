@@ -27,8 +27,18 @@ EBTNodeResult::Type USTUF_NextLocationTask::ExecuteTask(UBehaviorTreeComponent& 
 	// просто переменная заглушка, в нее записывается новое значение координат
 	FNavLocation NavLocation;
 
+	auto Location = Pawn->GetActorLocation();
+
+	if (!SelfCenter)
+	{
+		auto CenterActor = Cast<AActor>(Blackboard->GetValueAsObject(CenterActorKey.SelectedKeyName));
+
+		if(!CenterActor) return EBTNodeResult::Failed;
+		Location = CenterActor->GetActorLocation();
+	}
+
 	// получаем рандомное значение координат
-	const auto Found = NavSys->GetRandomReachablePointInRadius(Pawn->GetActorLocation(),Radius, NavLocation );
+	const auto Found = NavSys->GetRandomReachablePointInRadius(Location,Radius, NavLocation );
 
 	if(!Found) return EBTNodeResult::Failed;
 

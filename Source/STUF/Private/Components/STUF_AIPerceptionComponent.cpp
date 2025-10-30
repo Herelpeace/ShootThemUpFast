@@ -12,6 +12,7 @@
 #include "Components/STUF_HealthComponent.h"
 #include "Perception/AISense_Sight.h"
 
+
 AActor* USTUF_AIPerceptionComponent::GetClosestEnemy() const
 {
 	// создаем массив для хранения акторов

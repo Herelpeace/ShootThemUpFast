@@ -28,4 +28,11 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MYAI")
 	FBlackboardKeySelector AimLocationKey;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MYAI")
+	bool SelfCenter = true;
+
+	// ключ для объекта относительно которого находим рандомеую точку при атаке
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MYAI", meta = (EditConfition = "!SelfCenter"))
+	FBlackboardKeySelector CenterActorKey;
+
 };
