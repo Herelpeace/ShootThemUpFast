@@ -57,11 +57,24 @@ APlayerController* ASTUF_BaseWeapon::GetPlayerController() const
 // получаем положение камеры в пространстве
 bool ASTUF_BaseWeapon::GetPlayerViewPoint( FVector& ViewLocation,FRotator& ViewRotation) const
 {
-	const auto Controller = GetPlayerController();
-	if(!Controller) nullptr;
+	const auto STUCharacter = Cast<ACharacter>(GetOwner());
 
-	// получаем позицию камеры и ее ориентацию в пространстве
-	Controller->GetPlayerViewPoint(ViewLocation,ViewRotation);
+	if(!STUCharacter) return false;
+
+	if (STUCharacter->IsPlayerControlled())
+	{
+		const auto Controller = GetPlayerController();
+		if(!Controller) nullptr;
+
+		// получаем позицию камеры и ее ориентацию в пространстве
+		Controller->GetPlayerViewPoint(ViewLocation,ViewRotation);
+	}
+	else
+	{
+		ViewLocation = GetMazzleWorldLocation();
+		ViewRotation = WeaponMesh->GetSocketRotation(MuzzleSocketName);
+	}
+
 	return true;
 }
 
