@@ -5,6 +5,7 @@
 #include "AI/STUF_AIController.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Components/STUF_AIWeaponComponent.h"
+#include "BrainComponent.h"
 
 
 ASTUF_AICharacter::ASTUF_AICharacter(const FObjectInitializer& ObjInit)
@@ -21,4 +22,18 @@ ASTUF_AICharacter::ASTUF_AICharacter(const FObjectInitializer& ObjInit)
 		GetCharacterMovement()->bUseControllerDesiredRotation = true;
 		GetCharacterMovement()->RotationRate=FRotator(0.0f, 200.0f, 0.0f);
 	}
+}
+
+void ASTUF_AICharacter::OnDeath()
+{
+	Super::OnDeath();
+
+	const auto STUController = Cast<AAIController>(Controller);
+
+	if (STUController && STUController->BrainComponent)
+	{
+		// останавливаем выполнение дерева поведения у данного AICharactera
+		STUController->BrainComponent->Cleanup();
+	}
+
 }

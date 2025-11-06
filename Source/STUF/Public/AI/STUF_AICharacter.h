@@ -23,6 +23,8 @@ class STUF_API ASTUF_AICharacter : public ASTUF_Character
 		UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "MYAI")
 		UBehaviorTree* BehaviorTreeAsset;
 
+protected:
+	virtual void OnDeath() override;
 
 
 };
