@@ -31,7 +31,8 @@ public class STUF : ModuleRules
             "STUF/Public/Pickups",
             "STUF/Public/Weapon/Components",
             "STUF/Public/AI",
-            "STUF/Public/AI/Tasks"
+            "STUF/Public/AI/Tasks",
+            "STUF/Public/AI/EQS"
                                                  });
 
 		// Uncomment if you are using Slate UI
