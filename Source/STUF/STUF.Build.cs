@@ -32,7 +32,9 @@ public class STUF : ModuleRules
             "STUF/Public/Weapon/Components",
             "STUF/Public/AI",
             "STUF/Public/AI/Tasks",
-            "STUF/Public/AI/EQS"
+            "STUF/Public/AI/EQS",
+            "STUF/Public/AI/Decorators"
+
                                                  });
 
 		// Uncomment if you are using Slate UI
