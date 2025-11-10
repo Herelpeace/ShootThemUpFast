@@ -34,6 +34,8 @@ public:
 	bool TryToAddAmmo(int32 ClipsAmount);
 	bool IsAmmoEmpty() const;
 
+	bool IsAmmoFull() const;
+
 protected:
 	UPROPERTY(VisibleAnywhere,BlueprintReadWrite, Category = "MyComponents")
 	USkeletalMeshComponent* WeaponMesh;
@@ -70,8 +72,7 @@ protected:
 	void DecreaseAmmo();
 	bool IsClipsEmpty() const;
 	void LogAmmo();
-	bool IsAmmoFull() const;
-
+	
 	UNiagaraComponent* SpawnMuzzleFX();
 	
 	

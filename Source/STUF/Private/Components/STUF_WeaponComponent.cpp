@@ -235,9 +235,7 @@ void USTUF_WeaponComponent::OnEmptyClip(ASTUF_BaseWeapon* AmmoEmptyWeapon)
 				Weapon->ChangeClip();
 			}
 		}
-	}
-
-	
+	}	
 }
 
 void USTUF_WeaponComponent::ChangeClip()
@@ -280,6 +278,18 @@ bool USTUF_WeaponComponent::TryToAddAmmo(TSubclassOf<ASTUF_BaseWeapon> WeaponTyp
 		if (Weapon && Weapon->IsA(WeaponType))
 		{
 			return Weapon->TryToAddAmmo(ClipsAmount);
+		}
+	}
+	return false;
+}
+
+bool USTUF_WeaponComponent::NeedAmmo(TSubclassOf<ASTUF_BaseWeapon> WeaponType)
+{
+		for (const auto Weapon:Weapons)
+	{
+		if (Weapon && Weapon->IsA(WeaponType))
+		{
+			return Weapon->IsAmmoFull();
 		}
 	}
 	return false;

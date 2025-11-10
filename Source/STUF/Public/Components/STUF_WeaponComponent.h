@@ -7,9 +7,8 @@
 #include "STUFCoreTypes.h"
 #include "STUF_WeaponComponent.generated.h"
 
+
 class ASTUF_BaseWeapon;
-
-
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class STUF_API USTUF_WeaponComponent : public UActorComponent
@@ -28,6 +27,8 @@ public:
 	bool GetCurrentWeaponAmmoData(FAmmoData& AmmoData) const;
 
 	bool TryToAddAmmo(TSubclassOf<ASTUF_BaseWeapon> WeaponType, int32 ClipsAmount);
+
+	bool NeedAmmo(TSubclassOf<ASTUF_BaseWeapon> WeaponType);
 
 protected:
 
