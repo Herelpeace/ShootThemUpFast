@@ -4,11 +4,11 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/GameModeBase.h"
+#include "STUFCoreTypes.h"
 #include "STUF_GameModeBase.generated.h"
 
-/**
- *
- */
+class AAIController;
+
 UCLASS()
 class STUF_API ASTUF_GameModeBase : public AGameModeBase
 {
@@ -17,11 +17,25 @@ class STUF_API ASTUF_GameModeBase : public AGameModeBase
 public:
     ASTUF_GameModeBase();
 
+    // функция вызывается до BeginPlay Game модв, и до всех остальных. самамя первая
+    virtual void StartPlay() override;
+
+    virtual UClass* GetDefaultPawnClassForController_Implementation(AController* InController) override;
+
+protected:
+    UPROPERTY(EditDefaultsOnly, Category = "Game")
+    TSubclassOf<AAIController> AIControllerClass;
+
+    UPROPERTY(EditDefaultsOnly, Category = "Game")
+    TSubclassOf<APawn> AIPawnClass;
+
+    UPROPERTY(EditDefaultsOnly, Category = "Game")
+    FGameData GameData;
+
+private:
+    void SpawnBots();
 
 
-
-
-
-
+    
 
 };
