@@ -26,12 +26,13 @@ protected:
 	virtual void BeginPlay() override;
 	virtual void NotifyActorBeginOverlap(AActor* OtherActor) override;
 
-
 public:	
 	virtual void Tick(float DeltaTime) override;
+	bool CouldBeTaken() const;
 
 private:
 	float RotationYaw = 0.0f;
+	FTimerHandle RespawnTimerHandle;
 	virtual bool GivePickupTo(APawn* PlayerPawn);
 
 	void PickupWasTaken();
