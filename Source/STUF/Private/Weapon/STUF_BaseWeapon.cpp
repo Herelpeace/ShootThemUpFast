@@ -123,7 +123,7 @@ void ASTUF_BaseWeapon::DecreaseAmmo()
 {
 	if (CurrentAmmo.Bullets == 0)
 	{
-		UE_LOGFMT(LogBaseWeapon, Warning,"No more clips ");
+		//UE_LOGFMT(LogBaseWeapon, Warning,"No more clips ");
 		//UE_LOG(LogBaseWeapon, Warnin,TEXT("No more clips "));
 		return;
 	}
@@ -154,14 +154,14 @@ void ASTUF_BaseWeapon::ChangeClip()
 	{
 		if (CurrentAmmo.Clips == 0)
 		{
-			UE_LOGFMT(LogBaseWeapon, Warning,"No more clips ");
+			//UE_LOGFMT(LogBaseWeapon, Warning,"No more clips ");
 			return;
 		}
 		CurrentAmmo.Clips--;
 	}
 	CurrentAmmo.Bullets= DefaultAmmo.Bullets;
 
-	UE_LOGFMT(LogBaseWeapon,Warning," -------------- Change Clip --------------");
+	//UE_LOGFMT(LogBaseWeapon,Warning," -------------- Change Clip --------------");
 }
 
 bool ASTUF_BaseWeapon::CanReload() const

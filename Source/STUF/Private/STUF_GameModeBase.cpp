@@ -6,7 +6,9 @@
 #include "Player/STUF_PlayerController.h"
 #include "UI/STUF_GameHUD.h"
 #include "AIController.h"
+#include "Logging/StructuredLog.h"
 
+DEFINE_LOG_CATEGORY_STATIC(LogSTUFGameModeBase, All, All);
 
 ASTUF_GameModeBase::ASTUF_GameModeBase () 
 {
@@ -23,6 +25,9 @@ void ASTUF_GameModeBase::StartPlay()
 {
 	Super::StartPlay();
 	SpawnBots();
+
+	CurrentRound = 1;
+	StartRound();
 }
 
 UClass* ASTUF_GameModeBase::GetDefaultPawnClassForController_Implementation(AController* InController)
@@ -49,4 +54,31 @@ void ASTUF_GameModeBase::SpawnBots()
 
 	}
 
+}
+
+void ASTUF_GameModeBase::StartRound()
+{
+	RoundCountDown = GameData.RoundTime;
+	GetWorldTimerManager().SetTimer(GameRoundTimerHandle, this, &ASTUF_GameModeBase::GameTimerUpdate, 1.0f, true);
+}
+
+
+void ASTUF_GameModeBase::GameTimerUpdate()
+{
+	UE_LOGFMT(LogSTUFGameModeBase,Warning,"Time: {0} / Round: {1}/{2} ",RoundCountDown, CurrentRound, GameData.RoundsNum);
+
+	if (--RoundCountDown == 0)
+	{
+		GetWorldTimerManager().ClearTimer(GameRoundTimerHandle);
+
+		if (CurrentRound + 1 <= GameData.RoundsNum)
+		{
+			++CurrentRound;
+			StartRound();
+		}
+		else
+		{
+			UE_LOGFMT(LogSTUFGameModeBase,Warning,"======== Game Over ========" );
+		}
+	}
 }

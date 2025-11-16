@@ -289,7 +289,7 @@ bool USTUF_WeaponComponent::NeedAmmo(TSubclassOf<ASTUF_BaseWeapon> WeaponType)
 	{
 		if (Weapon && Weapon->IsA(WeaponType))
 		{
-			return Weapon->IsAmmoFull();
+			return !Weapon->IsAmmoFull();
 		}
 	}
 	return false;
