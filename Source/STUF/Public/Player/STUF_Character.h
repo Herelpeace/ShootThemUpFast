@@ -50,6 +50,9 @@ protected:
 	UPROPERTY(VisibleAnywhere,BlueprintReadWrite,Category="AComponent")
 	USTUF_WeaponComponent* WeaponComponent;
 
+	UPROPERTY(EditDefaultsOnly, Category = "Material")
+	FName MaterialColorName = "Paint Color";
+
 
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -70,6 +73,7 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "AComponents")
 	float GetMovementDirection() const;
 
+	void SetPlayerColor(const FLinearColor& Color);
 
 private:
 	bool WantsToRun = false;

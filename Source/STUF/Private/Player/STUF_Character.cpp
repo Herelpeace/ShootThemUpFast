@@ -182,4 +182,12 @@ void ASTUF_Character::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 
 	}
 
+	void ASTUF_Character::SetPlayerColor(const FLinearColor& Color)
+	{
+		const auto MaterialInst = GetMesh()->CreateAndSetMaterialInstanceDynamic(0);
+		if(!MaterialInst) return;
+
+		MaterialInst->SetVectorParameterValue(MaterialColorName,Color);
+
+	}
 

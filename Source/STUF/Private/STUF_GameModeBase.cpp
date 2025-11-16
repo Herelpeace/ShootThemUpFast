@@ -7,6 +7,7 @@
 #include "UI/STUF_GameHUD.h"
 #include "AIController.h"
 #include "Logging/StructuredLog.h"
+#include "Player/STUF_PlayerState.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogSTUFGameModeBase, All, All);
 
@@ -18,6 +19,8 @@ ASTUF_GameModeBase::ASTUF_GameModeBase ()
 
 	HUDClass = ASTUF_GameHUD::StaticClass();
 
+	PlayerStateClass = ASTUF_PlayerState::StaticClass();
+
 }
 
 // функция вызывается до BeginPlay Game модв, и до всех остальных. самамя первая
@@ -25,6 +28,7 @@ void ASTUF_GameModeBase::StartPlay()
 {
 	Super::StartPlay();
 	SpawnBots();
+	CreateTeamsInfo();
 
 	CurrentRound = 1;
 	StartRound();
@@ -101,5 +105,53 @@ void ASTUF_GameModeBase::ResetOnePlayer(AController* Controller)
 		Controller->GetPawn()->Reset();
 	}
 	RestartPlayer(Controller);
+	SetPlayerColor(Controller);
 }
 
+void ASTUF_GameModeBase::CreateTeamsInfo()
+{
+	if(!GetWorld()) return;
+
+	int32 TeamID = 1;
+
+	for (auto It = GetWorld()->GetControllerIterator(); It; ++It)
+	{
+		const auto Controller = It->Get();
+		if(!Controller) continue;
+
+		const auto PlayerState = Cast<ASTUF_PlayerState>(Controller->PlayerState);
+		if(!PlayerState) continue;
+
+		PlayerState->SetTeamID(TeamID);
+		PlayerState->SetTeamColor(DetermineColorByTeamID(TeamID));
+		SetPlayerColor(Controller);
+
+		TeamID = TeamID==1?2:1;
+	}
+}
+
+
+FLinearColor ASTUF_GameModeBase::DetermineColorByTeamID(int32 TeamID) const
+{
+	if (TeamID - 1 < GameData.TeamColor.Num())
+	{
+		return GameData.TeamColor[TeamID-1];
+	}
+	
+	return GameData.DefaultTeamColor;
+
+}
+
+void ASTUF_GameModeBase::SetPlayerColor(AController* Controller)
+{
+	if(!Controller) return;
+
+	const auto Character = Cast<ASTUF_Character>(Controller->GetPawn());
+	if(!Character) return;
+
+	const auto PlayerState = Cast <ASTUF_PlayerState>(Controller->PlayerState);
+	if(!PlayerState) return;
+
+	Character->SetPlayerColor(PlayerState->GetTeamColor());
+
+}
