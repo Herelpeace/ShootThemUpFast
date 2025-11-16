@@ -12,6 +12,9 @@ ASTUF_AIController::ASTUF_AIController()
 	// создвем наш AIPercaptionComponent
 	STUF_AIPerceptionComponent = CreateDefaultSubobject<USTUF_AIPerceptionComponent>("STUF_AIPerceptionComponent");
 	SetPerceptionComponent(*STUF_AIPerceptionComponent);
+
+	// автоматически спавнит PlayerState для каждого AIController
+	bWantsPlayerState = true;
 }
 
 void ASTUF_AIController::Tick(float DeltaTime)

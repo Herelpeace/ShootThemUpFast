@@ -51,9 +51,7 @@ void ASTUF_GameModeBase::SpawnBots()
 
 		const auto STUAIController = GetWorld()->SpawnActor<AAIController>(AIControllerClass, SpawnInfo);
 		RestartPlayer(STUAIController);
-
 	}
-
 }
 
 void ASTUF_GameModeBase::StartRound()
@@ -74,6 +72,7 @@ void ASTUF_GameModeBase::GameTimerUpdate()
 		if (CurrentRound + 1 <= GameData.RoundsNum)
 		{
 			++CurrentRound;
+			ResetPlayers();
 			StartRound();
 		}
 		else
@@ -82,3 +81,25 @@ void ASTUF_GameModeBase::GameTimerUpdate()
 		}
 	}
 }
+
+// вызывается каждый раз в начале раунда, вызывает функцию ResetOnePlayer
+void ASTUF_GameModeBase::ResetPlayers()
+{
+	if(!GetWorld()) return;
+
+	for (auto It = GetWorld()->GetControllerIterator(); It; ++It)
+	{
+		ResetOnePlayer(It->Get());
+	}
+}
+
+// делает destroy всех акторов, заново спавнит их
+void ASTUF_GameModeBase::ResetOnePlayer(AController* Controller)
+{
+	if (Controller && Controller->GetPawn())
+	{
+		Controller->GetPawn()->Reset();
+	}
+	RestartPlayer(Controller);
+}
+

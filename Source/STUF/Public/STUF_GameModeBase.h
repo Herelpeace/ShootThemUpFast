@@ -41,4 +41,7 @@ private:
     void StartRound();
     void GameTimerUpdate();
 
+    void ResetPlayers();
+    void ResetOnePlayer(AController* Controller);
+
 };

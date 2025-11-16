@@ -12,7 +12,7 @@ ASTUF_AICharacter::ASTUF_AICharacter(const FObjectInitializer& ObjInit)
 	:Super(ObjInit.SetDefaultSubobjectClass<USTUF_AIWeaponComponent>("WeaponComponent"))
 {
 
-	AutoPossessAI = EAutoPossessAI::PlacedInWorldOrSpawned;
+	AutoPossessAI = EAutoPossessAI::Disabled;
 	AIControllerClass = ASTUF_AICharacter::StaticClass();
 
 	bUseControllerRotationYaw = false;
