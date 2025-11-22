@@ -62,4 +62,6 @@ private:
 
 	void SpawnTraceFX (const FVector& TraceStart, FVector& TraceEnd);
 
+	AController* GetController() const;
+
 };

@@ -82,6 +82,7 @@ void ASTUF_GameModeBase::GameTimerUpdate()
 		else
 		{
 			UE_LOGFMT(LogSTUFGameModeBase,Warning,"======== Game Over ========" );
+			LogPlayerInfo();
 		}
 	}
 }
@@ -154,4 +155,37 @@ void ASTUF_GameModeBase::SetPlayerColor(AController* Controller)
 
 	Character->SetPlayerColor(PlayerState->GetTeamColor());
 
+}
+
+void ASTUF_GameModeBase::Killed(AController* KillerController, AController* VictimController)
+{
+	const auto KillerPlayerState = KillerController ? Cast<ASTUF_PlayerState>(KillerController->PlayerState) : nullptr;
+	const auto VictimPlayerState = VictimController ? Cast<ASTUF_PlayerState>(VictimController->PlayerState) : nullptr;
+
+	if (KillerPlayerState)
+	{
+		KillerPlayerState->AddKill();
+	}
+
+	if (VictimPlayerState)
+	{
+		VictimPlayerState->AddDeath();
+	}
+
+}
+
+void ASTUF_GameModeBase::LogPlayerInfo()
+{
+	if(!GetWorld()) return;
+
+	for (auto It = GetWorld()->GetControllerIterator(); It; ++It)
+	{
+		const auto Controller = It->Get();
+		if(!Controller) continue;
+
+		const auto PlayerState = Cast<ASTUF_PlayerState>(Controller->PlayerState);
+		if(!PlayerState) continue;
+
+		PlayerState->LogInfo();
+	}
 }

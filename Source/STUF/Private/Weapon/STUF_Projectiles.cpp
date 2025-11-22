@@ -72,7 +72,6 @@ void ASTUF_Projectiles::OnProjectileHit (UPrimitiveComponent* HitComponent, AAct
 }
 
 
-
 AController* ASTUF_Projectiles::GetController() const
 {
 	const auto Pawn = Cast<APawn>(GetOwner());

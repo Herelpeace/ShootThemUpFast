@@ -9,6 +9,7 @@
 #include "Engine/World.h"
 #include "TimerManager.h"
 #include "Camera/CameraShakeBase.h"
+#include "STUF_GameModeBase.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogHealthComponent,All,All);
 
@@ -47,6 +48,7 @@ void USTUF_HealthComponent::OnTakeAnyDamage(AActor* DamagedActor, float Damage, 
 
 	if (IsDead())
 	{
+		Killed(InstigatedBy);
 		OnDeath.Broadcast();
 	}
 	else if (AutoHeal)
@@ -107,4 +109,16 @@ void USTUF_HealthComponent::PlayCameraShake()
 
 	Controller->PlayerCameraManager->StartCameraShake(CameraShake);
 
+}
+
+void USTUF_HealthComponent::Killed(AController* KillerController)
+{
+	if(!GetWorld()) return;
+	const auto GameMode = Cast<ASTUF_GameModeBase>(GetWorld()->GetAuthGameMode());
+	if(!GameMode) return;
+
+	const auto Player = Cast<APawn> (GetOwner());
+	const auto VictimController = Player ? Player->Controller : nullptr;
+
+	GameMode->Killed(KillerController, VictimController);
 }

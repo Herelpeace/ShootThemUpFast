@@ -114,7 +114,7 @@ void ASTUF_RifleWeapon::MakeDamage(const FHitResult &HitResult)
 
 	if(!DamageActor) return;
 
-	DamageActor->TakeDamage(DamageAmount, FDamageEvent(), GetPlayerController(), this );
+	DamageActor->TakeDamage(DamageAmount, FDamageEvent(), GetController(), this );
 
 }
 
@@ -152,5 +152,10 @@ void ASTUF_RifleWeapon::SpawnTraceFX (const FVector& TraceStart, FVector& TraceE
 
 }
 
+AController* ASTUF_RifleWeapon::GetController() const
+{
+	const auto Pawn = Cast<APawn>(GetOwner());
+	return Pawn? Pawn->GetController():nullptr;
 
+}
 
