@@ -37,7 +37,11 @@ AActor* USTUF_AIPerceptionComponent::GetClosestEnemy() const
 	{
 		const auto HealthComponent = STUUtils::GetSTUFPlayerComponent<USTUF_HealthComponent>(PerciveActor);
 
-		if (HealthComponent && !HealthComponent->IsDead()) // в будущем добавить проверку на врага
+		const auto PercivePawn = Cast<APawn>(PerciveActor);
+		const auto AreEnemies = PercivePawn && STUUtils::AreEnwmies(Controller, PercivePawn->Controller);
+
+
+		if (HealthComponent && !HealthComponent->IsDead() && AreEnemies) // в будущем добавить проверку на врага
 		{
 			// получаем расстояние до наблюдаемого актора
 			// от координат наблюдаемого актора отнимаем координаты актора которыми влажеет AI
