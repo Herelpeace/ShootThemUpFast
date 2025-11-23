@@ -5,6 +5,7 @@
 #include "AI/STUF_AIController.h"
 #include "AI/STUF_AICharacter.h"
 #include "Components/STUF_AIPerceptionComponent.h"
+#include "Components/STUF_RespawnComponent.h"
 #include "BehaviorTree/BlackboardComponent.h"
 
 ASTUF_AIController::ASTUF_AIController()
@@ -12,6 +13,9 @@ ASTUF_AIController::ASTUF_AIController()
 	// создвем наш AIPercaptionComponent
 	STUF_AIPerceptionComponent = CreateDefaultSubobject<USTUF_AIPerceptionComponent>("STUF_AIPerceptionComponent");
 	SetPerceptionComponent(*STUF_AIPerceptionComponent);
+
+	// создаем компонент RespawnComponent
+	RespawnComponent = CreateDefaultSubobject<USTUF_RespawnComponent>("STUF_ARespawnComponent");
 
 	// автоматически спавнит PlayerState для каждого AIController
 	bWantsPlayerState = true;
