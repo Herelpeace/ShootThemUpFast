@@ -34,3 +34,8 @@ void USTUF_RespawnComponent::RespawnTimerUpdate()
 	}
 }
 
+
+bool USTUF_RespawnComponent::IsRespawnInProgress() const
+{
+	return GetWorld() && GetWorld()->GetTimerManager().IsTimerActive(RespawnTimerHandle);
+}
