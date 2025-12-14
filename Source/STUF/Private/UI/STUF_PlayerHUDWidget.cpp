@@ -8,16 +8,26 @@
 
 bool USTUF_PlayerHUDWidget::Initialize()
 {
+	if(GetOwningPlayer())
+	{
+		GetOwningPlayer()->GetOnNewPawnNotifier().AddUObject(this,&USTUF_PlayerHUDWidget::OnNewPawn);
+		OnNewPawn(GetOwningPlayerPawn());
+	}
+
+	return Super::Initialize();
+}
+
+void USTUF_PlayerHUDWidget::OnNewPawn(APawn* NewPawn)
+{
 	// получаем доступ к компоненту HealthComponent и вызывем у него функцию получения здоровья в процентах
 
-	const auto HealthComponent = STUUtils::GetSTUFPlayerComponent<USTUF_HealthComponent>(GetOwningPlayerPawn());
+	const auto HealthComponent = STUUtils::GetSTUFPlayerComponent<USTUF_HealthComponent>(NewPawn);
 
-	if (HealthComponent)
+	if (HealthComponent && !HealthComponent->OnHealtChange.IsBoundToObject(this ))
 	{
 		HealthComponent->OnHealtChange.AddUObject(this, &USTUF_PlayerHUDWidget::OnHealthChanged);
 	}
 
-	return Super::Initialize();
 }
 
 

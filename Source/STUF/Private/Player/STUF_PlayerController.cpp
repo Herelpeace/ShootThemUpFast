@@ -10,3 +10,13 @@ ASTUF_PlayerController::ASTUF_PlayerController()
 	RespawnComponent = CreateDefaultSubobject<USTUF_RespawnComponent>("STUF_ARespawnComponent");
 
 }
+
+/*
+
+void ASTUF_PlayerController::OnPossess(APawn* InPawn)
+{
+	Super::OnPossess( InPawn);
+
+	OnNewPawn.Broadcast(InPawn);
+}
+*/
