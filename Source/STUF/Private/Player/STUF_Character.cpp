@@ -2,12 +2,9 @@
 
 
 #include "Player/STUF_Character.h"
-#include "GameFramework/SpringArmComponent.h"
-#include "Camera/CameraComponent.h"
-#include "Components/InputComponent.h"
+
 #include "Components/STUF_CharacterMovementComponent.h"
 #include "Components/STUF_HealthComponent.h"
-#include "Components/TextRenderComponent.h"
 #include "Components/STUF_WeaponComponent.h"
 #include "Logging/StructuredLog.h"
 #include "Components/CapsuleComponent.h"
@@ -24,22 +21,9 @@ ASTUF_Character::ASTUF_Character( const FObjectInitializer& ObjInit)
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
-	SpringArmComponent=CreateDefaultSubobject<USpringArmComponent>("SpringArmComponent");
-	SpringArmComponent->SetupAttachment(GetRootComponent());
-	SpringArmComponent->bUsePawnControlRotation=true;
-	SpringArmComponent->SocketOffset = FVector(0.0f,100.0f,0.0f);
-
-	CameraComponent = CreateDefaultSubobject<UCameraComponent>("CameraComponent");
-	CameraComponent->SetupAttachment(SpringArmComponent);
-
 	HealthComponent = CreateDefaultSubobject<USTUF_HealthComponent>("MY_HealthComponent");
 
-	HealthTextComponent = CreateDefaultSubobject<UTextRenderComponent>("HealthTextComponent");
-	HealthTextComponent->SetupAttachment(GetRootComponent());
-	HealthTextComponent->SetOwnerNoSee(true);
-
 	WeaponComponent = CreateDefaultSubobject<USTUF_WeaponComponent>("WeaponComponent");
-
 }
 
 // Called when the game starts or when spawned
@@ -47,7 +31,6 @@ void ASTUF_Character::BeginPlay()
 {
 	Super::BeginPlay();	
 	check(HealthComponent);
-	check(HealthTextComponent);
 	check(GetCharacterMovement());
 	check(WeaponComponent);
 	check(GetMesh());
@@ -64,7 +47,7 @@ void ASTUF_Character::BeginPlay()
 
 void ASTUF_Character::OnHealthChange(float Health, float HealthDelta)
 {
-	HealthTextComponent->SetText(FText::FromString(FString::Printf(TEXT("%.0f "),Health)));
+
 }
 
 void ASTUF_Character::OnGroundLanded(const FHitResult& Hit)
@@ -89,105 +72,46 @@ void ASTUF_Character::Tick(float DeltaTime)
 }
 
 
-// Called to bind functionality to input
-void ASTUF_Character::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
+bool ASTUF_Character::IsRunning() const
 {
-	Super::SetupPlayerInputComponent(PlayerInputComponent);
-
-	check(PlayerInputComponent);
-
-	PlayerInputComponent->BindAxis("MoveForward",this, &ASTUF_Character::MoveForward );
-	PlayerInputComponent->BindAxis("MoveRight", this, &ASTUF_Character::MoveRight );
-	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &ASTUF_Character::Jump );
-	PlayerInputComponent->BindAction("Run", IE_Pressed, this, &ASTUF_Character::OnStartRunning);
-	PlayerInputComponent->BindAction("Run", IE_Released, this, &ASTUF_Character::OnStopRunning);
-
-	// мышка
-	PlayerInputComponent->BindAxis("LookUp", this, &ASTUF_Character::AddControllerPitchInput);
-	PlayerInputComponent->BindAxis("TurnAround", this, &ASTUF_Character::AddControllerYawInput);
-
-	//стрельба
-	PlayerInputComponent->BindAction("Fire", IE_Pressed, WeaponComponent, &USTUF_WeaponComponent::StartFire);
-	PlayerInputComponent->BindAction("Fire", IE_Released, WeaponComponent, &USTUF_WeaponComponent::StopFire);
-
-	// смена оружия
-	PlayerInputComponent->BindAction("NextWeapon", IE_Pressed, WeaponComponent, &USTUF_WeaponComponent::NextWeapon);
-	PlayerInputComponent->BindAction("Reload", IE_Pressed, WeaponComponent, &USTUF_WeaponComponent::Reload);
-
+	return false;
 }
 
-	// вызывается при движении вперед/ назад
-	void ASTUF_Character::MoveForward(float Amount)
-	{
-		if(Amount==0.0f) return;
-		
-		IsMovingForward = Amount>0.0f;	//нажата клавиша вперед
-		AddMovementInput(GetActorForwardVector(), Amount);
-	}
+float  ASTUF_Character::GetMovementDirection() const
+{
+	if(GetVelocity().IsZero()) return 0.0f;
 
-	// вызывается при движении влево/вправо
-	void ASTUF_Character::MoveRight(float Amount)
-	{
-		if(Amount==0.0f) return;
-		AddMovementInput(GetActorRightVector(), Amount);
-	}
+	const auto VelocityNormal = GetVelocity().GetSafeNormal();
+	const auto  AngleBetween = FMath::Acos(FVector::DotProduct(GetActorForwardVector(), VelocityNormal));
+	const auto CrossProduct = FVector::CrossProduct(GetActorForwardVector(), VelocityNormal);
+	const auto Degrees = FMath::RadiansToDegrees(AngleBetween);
+	return CrossProduct.IsZero() ? Degrees : Degrees* FMath::Sign(CrossProduct.Z);
+}
 
-	void ASTUF_Character::OnStartRunning()
-	{
-		WantsToRun  = true;	// нажата клавиша Shift
-	}
+void ASTUF_Character::OnDeath()
+{
+	// UE_LOGFMT(LogBaseCharacter, Warning,"Plyer is dead! {name}", *GetName());
 
-	void ASTUF_Character::OnStopRunning()
-	{
-		WantsToRun  = false;
-	}
+	// PlayAnimMontage(DeathAnimMontage);
 
-	bool ASTUF_Character::IsRunning() const
-	{
-		return WantsToRun && IsMovingForward && !GetVelocity().IsZero();
-	}
+	GetCharacterMovement()->DisableMovement();
 
-	float  ASTUF_Character::GetMovementDirection() const
-	{
-		if(GetVelocity().IsZero()) return 0.0f;
+	SetLifeSpan(LifaSpanOnDeath);
 
-		const auto VelocityNormal = GetVelocity().GetSafeNormal();
-		const auto  AngleBetween = FMath::Acos(FVector::DotProduct(GetActorForwardVector(), VelocityNormal));
-		const auto CrossProduct = FVector::CrossProduct(GetActorForwardVector(), VelocityNormal);
-		const auto Degrees = FMath::RadiansToDegrees(AngleBetween);
-		return CrossProduct.IsZero() ? Degrees : Degrees* FMath::Sign(CrossProduct.Z);
-	}
+	GetCapsuleComponent()->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
 
-	void ASTUF_Character::OnDeath()
-	{
-		// UE_LOGFMT(LogBaseCharacter, Warning,"Plyer is dead! {name}", *GetName());
+	WeaponComponent->StopFire();
 
-		// PlayAnimMontage(DeathAnimMontage);
+	GetMesh()->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+	GetMesh()->SetSimulatePhysics(true);
+}
 
-		GetCharacterMovement()->DisableMovement();
+void ASTUF_Character::SetPlayerColor(const FLinearColor& Color)
+{
+	const auto MaterialInst = GetMesh()->CreateAndSetMaterialInstanceDynamic(0);
+	if(!MaterialInst) return;
 
-		SetLifeSpan(LifaSpanOnDeath);
+	MaterialInst->SetVectorParameterValue(MaterialColorName,Color);
 
-		if (Controller)
-		{
-			Controller->ChangeState(NAME_Spectating);
-		}
-
-		GetCapsuleComponent()->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
-
-		WeaponComponent->StopFire();
-
-		GetMesh()->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
-		GetMesh()->SetSimulatePhysics(true);
-
-	}
-
-	void ASTUF_Character::SetPlayerColor(const FLinearColor& Color)
-	{
-		const auto MaterialInst = GetMesh()->CreateAndSetMaterialInstanceDynamic(0);
-		if(!MaterialInst) return;
-
-		MaterialInst->SetVectorParameterValue(MaterialColorName,Color);
-
-	}
+}
 

@@ -6,10 +6,8 @@
 #include "GameFramework/Character.h"
 #include "STUF_Character.generated.h"
 
-class UCameraComponent;
-class USpringArmComponent;
+
 class USTUF_HealthComponent;
-class UTextRenderComponent;
 class USTUF_WeaponComponent;
 
 
@@ -23,17 +21,9 @@ public:
 	ASTUF_Character( const FObjectInitializer& ObjInit);
 
 protected:
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "AComponents")
-	USpringArmComponent* SpringArmComponent;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "AComponents")
-	UCameraComponent* CameraComponent;
 
 	UPROPERTY(VisibleAnywhere,BlueprintReadWrite,Category = "AComponents")
 	USTUF_HealthComponent* HealthComponent;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite,Category = "AComponents")
-	UTextRenderComponent* HealthTextComponent;
 
 	UPROPERTY(EditDefaultsOnly, Category = "AComponents")
 	UAnimMontage* DeathAnimMontage;
@@ -63,12 +53,9 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	// Called to bind functionality to input
-	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
-
 	// проверят включен ли бег у персонажа (клавиша Shift и вперед)
 	UFUNCTION(BlueprintCallable, Category = "AComponents")
-	bool IsRunning() const;
+	virtual bool IsRunning() const;
 
 	UFUNCTION(BlueprintCallable, Category = "AComponents")
 	float GetMovementDirection() const;
@@ -76,17 +63,6 @@ public:
 	void SetPlayerColor(const FLinearColor& Color);
 
 private:
-	bool WantsToRun = false;
-	bool IsMovingForward = false;
-
-	// вызывается при движении вперед/ назад
-	void MoveForward(float Amount);
-
-	// вызывается при движении влево/вправо
-	void MoveRight(float Amount);
-
-	void OnStartRunning();
-	void OnStopRunning();
 	void OnHealthChange(float Health, float HealthDelta);
 
 	UFUNCTION() // динамический делегат
