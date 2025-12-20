@@ -8,6 +8,7 @@
 
 class UCameraComponent;
 class USpringArmComponent;
+class USphereComponent;
 
 UCLASS()
 class STUF_API ASTUF_PlayerCharacter : public ASTUF_Character
@@ -24,8 +25,12 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "AComponents")
 	UCameraComponent* CameraComponent;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
+	USphereComponent* CameraCollisionComponent;
 	
 	virtual void OnDeath() override;
+	virtual void BeginPlay() override;
 
 public:
 	// Called to bind functionality to input
@@ -47,5 +52,13 @@ private:
 	void OnStartRunning();
 	void OnStopRunning();
 
+	UFUNCTION()
+	void OnCameraCollisionBeginOverlap ( UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+	
+	UFUNCTION()
+	void OnCameraCollisionEndOverlap ( UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
+	
+	void CheckCameraOverlap();
+	
 
 };
