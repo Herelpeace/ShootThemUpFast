@@ -20,11 +20,21 @@ void ASTUF_GameHUD::BeginPlay()
 {
 	Super::BeginPlay();
 
-	auto PlayerHUDWidget = CreateWidget<UUserWidget>(GetWorld(), PlayerHUDWidgetClass);
+	// добавлем пару ключ-значение в массив (состояние игры - виджет)
+	GameWidgets.Add(ESTUMatchState::InProgress,CreateWidget<UUserWidget>(GetWorld(), PlayerHUDWidgetClass));
+	GameWidgets.Add(ESTUMatchState::Pause,CreateWidget<UUserWidget>(GetWorld(), PauseWidgetClass));
 
-	if (PlayerHUDWidget)
+	for (auto GameWidgetPair : GameWidgets)
 	{
-		PlayerHUDWidget->AddToViewport();
+		const auto GameWidget = GameWidgetPair.Value;
+		if(!GameWidget) continue;
+
+		// добавляем все найденые виджеты на экран
+		GameWidget->AddToViewport();
+
+		// делвем их невидимыми
+		GameWidget->SetVisibility(ESlateVisibility::Hidden);
+
 	}
 
 	if (GetWorld())
@@ -40,6 +50,25 @@ void ASTUF_GameHUD::BeginPlay()
 // для делегата, вызывается при изменении состояния игры
 void ASTUF_GameHUD::OnMatchStateChanged(ESTUMatchState State)
 {
+	if (CurrentWidget)
+	{
+		// делвем невидимым текущий виджет
+		CurrentWidget->SetVisibility(ESlateVisibility::Hidden);
+	}
+
+	if (GameWidgets.Contains(State))
+	{
+		// в качестве текущего виджета выбираем тот который соответствует состоянию игры
+		CurrentWidget = GameWidgets[State];
+	}
+
+	if (CurrentWidget)
+	{
+		// делвем видимым новый текущий виджет
+		CurrentWidget->SetVisibility(ESlateVisibility::Visible);
+	}
+
+
 	UE_LOGFMT(LogSTUFGameHUD, Warning, "Match state changed: {1}", *UEnum::GetValueAsString(State));
 }
 
