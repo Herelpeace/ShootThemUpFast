@@ -17,6 +17,8 @@ class STUF_API ASTUF_GameModeBase : public AGameModeBase
 public:
     ASTUF_GameModeBase();
 
+   FOnMatchStateChangedSignature OnMatchStateChanged;
+
     // функция вызывается до BeginPlay Game модв, и до всех остальных. самамя первая
     virtual void StartPlay() override;
 
@@ -41,6 +43,7 @@ protected:
     FGameData GameData;
 
 private:
+    ESTUMatchState MatchState = ESTUMatchState::WaitingToStart;
     int32 CurrentRound = 1;
     int32 RoundCountDown = 0;
     FTimerHandle GameRoundTimerHandle;
@@ -60,5 +63,8 @@ private:
     void StartRespawn(AController* Controller);
 
     void GameOver();
+
+    // состояние игры
+    void SetMatchState(ESTUMatchState State);
 
 };

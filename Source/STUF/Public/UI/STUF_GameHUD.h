@@ -4,11 +4,9 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/HUD.h"
+#include "STUFCoreTypes.h"
 #include "STUF_GameHUD.generated.h"
 
-/**
- * 
- */
 UCLASS()
 class STUF_API ASTUF_GameHUD : public AHUD
 {
@@ -25,5 +23,8 @@ protected:
 
 private:
 	void DrawCrossHair();
-	
+
+	// для делегата, вызывается при изменении состояния игры
+	void OnMatchStateChanged(ESTUMatchState State);
+
 };

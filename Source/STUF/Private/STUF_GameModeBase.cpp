@@ -38,6 +38,8 @@ void ASTUF_GameModeBase::StartPlay()
 
 	CurrentRound = 1;
 	StartRound();
+
+	SetMatchState(ESTUMatchState::InProgress);
 }
 
 UClass* ASTUF_GameModeBase::GetDefaultPawnClassForController_Implementation(AController* InController)
@@ -228,4 +230,19 @@ void ASTUF_GameModeBase::GameOver()
 		}
 	}
 
+	SetMatchState(ESTUMatchState::GameOver);
 }
+
+// Состояние игры
+//----------------------------------------------------------------------------------------------------------
+
+void ASTUF_GameModeBase::SetMatchState(ESTUMatchState State)
+{
+	if(MatchState == State) return;
+
+	MatchState = State;
+
+	// оповещаем всех подписавшихся об изменении состояния игры
+	OnMatchStateChanged.Broadcast(MatchState);
+}
+

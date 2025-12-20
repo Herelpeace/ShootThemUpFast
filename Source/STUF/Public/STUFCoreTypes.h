@@ -146,6 +146,20 @@ struct FGameData
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Game", meta = (ClampMin = "3", ClampMax = "20"));
 	int32 MinTimeAcceptRespawn = 10;	// in secound
 
-
-
 };
+
+
+// State для GameMode в котором хранится текущее состояние игры
+//----------------------------------------------------------------------------------------------------------
+// хранит состояние игры, содержит делегат который оповещает об изменении состояния
+
+UENUM(BlueprintType)
+enum class ESTUMatchState:uint8
+{
+	WaitingToStart = 0,	// ожидание начала игры
+	InProgress,			// игра
+	Pause,				// пауза
+	GameOver			// игра окончена
+};
+
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnMatchStateChangedSignature, ESTUMatchState);
