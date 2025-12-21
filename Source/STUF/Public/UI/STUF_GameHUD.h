@@ -22,6 +22,9 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "MyConfig")
 	TSubclassOf<UUserWidget> PauseWidgetClass;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "MyConfig")
+	TSubclassOf<UUserWidget> GameOverWidgetClass;
+
 	virtual void BeginPlay() override;
 
 private:

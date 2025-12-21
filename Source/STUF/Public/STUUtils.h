@@ -26,7 +26,18 @@ public:
 		return PlayerState1 && PlayerState2 && PlayerState1->GetTeamID() != PlayerState2->GetTeamID();
 
 	}
+
+	// for STUF_GameOverWidget.h
+	// преобразует int -> String -> text
+
+	static FText TextFromInt(int32 Number) {return FText::FromString(FString::FromInt(Number));}
+
+
 };
+
+
+
+
 
 
 // функции до создания одной шаблонной функции
