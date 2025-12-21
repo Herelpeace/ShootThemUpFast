@@ -8,14 +8,12 @@
 #include "STUF_GameOverWidget.generated.h"
 
 class UVerticalBox;
+class UButton;
 
 UCLASS()
 class STUF_API USTUF_GameOverWidget : public UUserWidget
 {
 	GENERATED_BODY()
-
-public:
-	virtual bool Initialize() override;
 
 protected:
 	UPROPERTY(meta = (BindWidget))
@@ -24,8 +22,16 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "UI")
 	TSubclassOf<UUserWidget> PlayerStatRowWidgetClass;		// виджеты-строки с информацией
 
+	UPROPERTY(meta = (BindWidget))
+	UButton* ResetLevelButton;		// кнопка перезагрузки
+
+	virtual void NativeOnInitialized() override;
+
 private:
 	void OnMatchStateChanged(ESTUMatchState State);
 	void UpdatePlayersStat();
+
+	UFUNCTION()
+	void OnResetLevel();
 
 };

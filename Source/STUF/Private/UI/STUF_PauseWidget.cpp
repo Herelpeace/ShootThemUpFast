@@ -5,16 +5,14 @@
 #include "GameFramework/GameModeBase.h"
 #include "Components/Button.h"
 
-bool USTUF_PauseWidget::Initialize()
+void USTUF_PauseWidget::NativeOnInitialized()
 {
-	const auto InitStatus = Super::Initialize();
+	Super::NativeOnInitialized();
 
 	if (ClearPauseButton)
 	{
 		ClearPauseButton->OnClicked.AddDynamic(this, &USTUF_PauseWidget::OnClearPause);
 	}
-
-	return InitStatus;
 
 }
 

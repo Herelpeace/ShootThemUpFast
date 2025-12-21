@@ -14,7 +14,7 @@ class STUF_API USTUF_PauseWidget : public UUserWidget
 	GENERATED_BODY()
 
 public:
-	virtual bool Initialize() override;
+	virtual void NativeOnInitialized() override;
 
 protected:
 	// биндим виджет кнопки на функцию
