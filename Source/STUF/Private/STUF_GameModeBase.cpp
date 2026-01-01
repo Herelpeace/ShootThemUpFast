@@ -11,6 +11,7 @@
 #include "STUUtils.h"
 #include "Components/STUF_RespawnComponent.h"
 #include "EngineUtils.h"
+#include "STUF_GameInstance.h"
 
 
 DEFINE_LOG_CATEGORY_STATIC(LogSTUFGameModeBase, All, All);
@@ -33,6 +34,9 @@ ASTUF_GameModeBase::ASTUF_GameModeBase ()
 void ASTUF_GameModeBase::StartPlay()
 {
 	Super::StartPlay();
+
+	UE_LOGFMT (LogSTUFGameModeBase, Warning, " Test text: {0}", *GetWorld()->GetGameInstance<USTUF_GameInstance>()->TestString);
+
 	SpawnBots();
 	CreateTeamsInfo();
 
