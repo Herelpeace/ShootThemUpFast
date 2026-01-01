@@ -10,8 +10,14 @@ UCLASS()
 class STUF_API USTUF_GameInstance : public UGameInstance
 {
 	GENERATED_BODY()
-	
+
 public:
-	FString TestString = "Hello game!";
+	FName GetStartupLevelName() const {return StartupLevelName;}
+	
+protected:
+	UPROPERTY(EditDefaultsOnly, Category = "Game")
+	FName StartupLevelName = NAME_None;
+
+
 
 };

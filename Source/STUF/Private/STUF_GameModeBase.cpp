@@ -35,8 +35,6 @@ void ASTUF_GameModeBase::StartPlay()
 {
 	Super::StartPlay();
 
-	UE_LOGFMT (LogSTUFGameModeBase, Warning, " Test text: {0}", *GetWorld()->GetGameInstance<USTUF_GameInstance>()->TestString);
-
 	SpawnBots();
 	CreateTeamsInfo();
 
