@@ -17,7 +17,6 @@ void USTUF_GoToMenuWidget::NativeOnInitialized()
 	{
 		GoToMenuButton->OnClicked.AddDynamic(this, &USTUF_GoToMenuWidget::OnGoToMenu);
 	}
-
 }
 
 void USTUF_GoToMenuWidget::OnGoToMenu()
@@ -34,6 +33,5 @@ void USTUF_GoToMenuWidget::OnGoToMenu()
 	}
 
 	UGameplayStatics::OpenLevel(this, STUFGameInstance->GetMenuLevelName());
-
 
 }
