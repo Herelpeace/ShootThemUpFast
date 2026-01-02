@@ -163,3 +163,26 @@ enum class ESTUMatchState:uint8
 };
 
 DECLARE_MULTICAST_DELEGATE_OneParam(FOnMatchStateChangedSignature, ESTUMatchState);
+
+
+// Структура хранит данные для виджета LevelItem
+//----------------------------------------------------------------------------------------------------------
+// делегат передает данные от виджета LevelItem к MainMenu, определяет какой уровень выбран
+
+USTRUCT(BlueprintType)
+struct FLevelData
+{
+	GENERATED_USTRUCT_BODY()
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Game");
+	FName LevelName = NAME_None;	// имя уровня
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Game");
+	FName LevelDisplayName = NAME_None;		// уровень который отображем в виджете
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Game");
+	UTexture2D* LevelThumb;		// картинка для отображения (указатель на текстуру)
+
+};
+
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnLevelSelectedSignature, const FLevelData&);	// принимает параметр по константной ссылке

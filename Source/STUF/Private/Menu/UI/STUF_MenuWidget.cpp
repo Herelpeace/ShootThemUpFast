@@ -7,6 +7,8 @@
 #include "STUF_GameInstance.h"
 #include "Logging/StructuredLog.h"
 #include "Kismet/KismetSystemLibrary.h"
+#include "Components/HorizontalBox.h"
+#include "Menu/UI/STUF_LevelItemWidget.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogSTUFMenuWidget, All, All);
 
@@ -24,26 +26,87 @@ void USTUF_MenuWidget::NativeOnInitialized()
 		QuitGameButton->OnClicked.AddDynamic(this, &USTUF_MenuWidget::OnQuitGame);
 	}
 
+	InitLevelItems();
+}
+
+// создает кнопки выбора уровней, вызывается один раз при инициализации виджета
+void USTUF_MenuWidget::InitLevelItems()
+{
+	const auto STUGameInstance = GetSTUFGameInstance();
+
+	if(!STUGameInstance) return;
+
+	checkf( STUGameInstance->GetLevelsData().Num() != 0, TEXT("Levels data must not be empty"));
+
+	if(!LevelItemBox) return;	// если не установлен HorizontalBox
+
+	LevelItemBox->ClearChildren();	// очищаем данные в боксе
+
+	for (auto LevelData : STUGameInstance->GetLevelsData())		// получаем струтуры FLevelData из класса STUF_GameInstance
+	{
+		const auto LevelItemWidget = CreateWidget<USTUF_LevelItemWidget>(GetWorld(), LevelItemWidgetClass);		// создаем виджет типа STUF_LevelItemWidget
+
+		if(!LevelItemWidget) continue;
+
+		LevelItemWidget->SetLevelData(LevelData);	// в созданном виджете заплняем структуру LevelData, данными из STUF_GameInstance
+		LevelItemWidget->OnLevelSelected.AddUObject(this, &USTUF_MenuWidget::OnLevelSelected);	// подписываемся на делегат
+
+		LevelItemBox->AddChild(LevelItemWidget);	// добавлем в HorizontalBox
+		LevelItemWidgets.Add(LevelItemWidget);		// добавляем в массив LevelItemWidgets
+	}
+
+	// если стартовый уровень не задан
+	if (STUGameInstance->GetStartupLevel().LevelName.IsNone())
+	{
+		OnLevelSelected(STUGameInstance->GetLevelsData()[0]);
+	}
+	else
+	{
+		OnLevelSelected(STUGameInstance->GetStartupLevel());
+	}
 
 }
 
-void USTUF_MenuWidget::OnStartGame()
+// вызывается когда сработает делегат после нажатия на кнопку уровня
+void USTUF_MenuWidget::OnLevelSelected(const FLevelData& Data)
 {
-	if(!GetWorld()) return;
+	const auto STUGameInstance = GetSTUFGameInstance();
 
-	const auto STUFGameInstance = GetWorld()->GetGameInstance<USTUF_GameInstance>();
-	if(!STUFGameInstance) return;
+	if(!STUGameInstance) return;
 
-	if (STUFGameInstance->GetStartupLevelName().IsNone())
+	STUGameInstance->SetStartupLevel(Data);
+
+	for (auto LevelItemWidget : LevelItemWidgets)
 	{
-		UE_LOGFMT(LogSTUFMenuWidget, Warning, "Level name is NONE");
-		return;
+		if (LevelItemWidget)
+		{
+			// true если имя в колбэк такое же как имя в массиве текущих виджетов
+			const auto IsSelected = Data.LevelName == LevelItemWidget->GetLevelData().LevelName;
+			LevelItemWidget->SetSelected(IsSelected);	// устанавливаем видимость рамки
+		}
 	}
 
-	UGameplayStatics::OpenLevel(this, STUFGameInstance->GetStartupLevelName());
+}
+
+
+void USTUF_MenuWidget::OnStartGame()
+{
+	const auto STUGameInstance = GetSTUFGameInstance();
+
+	if(!STUGameInstance) return;
+
+	UGameplayStatics::OpenLevel(this, STUGameInstance->GetStartupLevel().LevelName);
 }
 
 void USTUF_MenuWidget::OnQuitGame()
 {
 	UKismetSystemLibrary::QuitGame(this, GetOwningPlayer(), EQuitPreference::Quit, true);
+}
+
+// возвращает указатель на наш класс STUF_GameInstance
+USTUF_GameInstance* USTUF_MenuWidget::GetSTUFGameInstance() const
+{
+	if(!GetWorld()) return nullptr;
+
+	return GetWorld()->GetGameInstance<USTUF_GameInstance>();
 }
