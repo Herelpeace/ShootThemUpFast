@@ -49,6 +49,8 @@ protected:
 
 	virtual void OnDeath();
 
+	virtual void OnHealthChange(float Health, float HealthDelta);
+
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
@@ -63,8 +65,6 @@ public:
 	void SetPlayerColor(const FLinearColor& Color);
 
 private:
-	void OnHealthChange(float Health, float HealthDelta);
-
 	UFUNCTION() // динамический делегат
 	void OnGroundLanded(const FHitResult& Hit);
 
