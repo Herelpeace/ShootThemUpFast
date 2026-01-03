@@ -45,4 +45,12 @@ private:
 
 	UFUNCTION()
 	void OnLevelItemClicked();		// callback функция, вызывается при нажатии на кнопку LevelSelectedButton
+
+	UFUNCTION()
+	void OnLevelItemHovered();		// вызывается при наведении на кнопку
+
+	UFUNCTION()
+	void OnLevelItemUnhovered();	// вызывается когда убираем курсор мыши с кнопки
+
+
 };

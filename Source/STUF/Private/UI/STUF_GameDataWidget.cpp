@@ -5,11 +5,6 @@
 #include "STUF_GameModeBase.h"
 #include "Player/STUF_PlayerState.h"
 
-int32 USTUF_GameDataWidget::GetKillsNum() const
-{
-	const auto PlayerState = GetSTUPlayerState();
-	return PlayerState ? PlayerState->GetKillsNum() : 0;
-}
 
 int32 USTUF_GameDataWidget::GetCurrentRoundNum() const
 {

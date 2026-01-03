@@ -14,6 +14,8 @@ void USTUF_LevelItemWidget::NativeOnInitialized()
 	{
 		// нажимаем кнопку SelectedButton, в кнопке вызываем делегат который меняет данные в структуре данных уровня
 		LevelSelectButton->OnClicked.AddDynamic(this, &USTUF_LevelItemWidget::OnLevelItemClicked); 
+		LevelSelectButton->OnHovered.AddDynamic(this, &USTUF_LevelItemWidget::OnLevelItemHovered); 
+		LevelSelectButton->OnUnhovered.AddDynamic(this, &USTUF_LevelItemWidget::OnLevelItemUnhovered); 
 	}
 }
 
@@ -37,17 +39,38 @@ void USTUF_LevelItemWidget::SetLevelData(const FLevelData& Data)
 	{
 		LevelImage->SetBrushFromTexture(Data.LevelThumb);
 	}
-
 }
-
 
 // включает отображение рамки в зависимости от того выбран уровень или нет
 void USTUF_LevelItemWidget::SetSelected(bool IsSelected)
 {
-	if (FrameImage)
+	FLinearColor MenuTileColor(0.6f, 1.0f, 0.6f, 1.0f);
+
+	if (LevelImage)
 	{
-		FrameImage->SetVisibility(IsSelected ? ESlateVisibility::Visible : ESlateVisibility::Hidden );
+		LevelImage->SetColorAndOpacity(IsSelected ? FLinearColor::White : MenuTileColor );
 	}
+
+	FrameImage->SetVisibility(IsSelected ? ESlateVisibility::Visible : ESlateVisibility::Hidden );
 }
 
+// вызывается при наведении на кнопку
+void USTUF_LevelItemWidget::OnLevelItemHovered()
+{
+		if (FrameImage)
+	{
+		//FrameImage->SetVisibility(ESlateVisibility::Visible);
+	}
+
+}
+
+// вызывается когда убираем курсор мыши с кнопки
+void USTUF_LevelItemWidget::OnLevelItemUnhovered()
+{
+		if (FrameImage)
+	{
+		//FrameImage->SetVisibility(ESlateVisibility::Hidden);
+	}
+
+}
 

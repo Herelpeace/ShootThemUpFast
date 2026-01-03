@@ -5,6 +5,9 @@
 #include "Components/STUF_HealthComponent.h"
 #include "Components/STUF_WeaponComponent.h"
 #include "STUUtils.h"
+#include "Components/ProgressBar.h"
+#include "Player/STUF_PlayerState.h"
+
 
 void USTUF_PlayerHUDWidget::NativeOnInitialized()
 {
@@ -15,7 +18,6 @@ void USTUF_PlayerHUDWidget::NativeOnInitialized()
 		GetOwningPlayer()->GetOnNewPawnNotifier().AddUObject(this,&USTUF_PlayerHUDWidget::OnNewPawn);
 		OnNewPawn(GetOwningPlayerPawn());
 	}
-
 }
 
 void USTUF_PlayerHUDWidget::OnNewPawn(APawn* NewPawn)
@@ -29,6 +31,8 @@ void USTUF_PlayerHUDWidget::OnNewPawn(APawn* NewPawn)
 		HealthComponent->OnHealtChange.AddUObject(this, &USTUF_PlayerHUDWidget::OnHealthChanged);
 	}
 
+	UpdateHealthBar();
+
 }
 
 
@@ -39,8 +43,9 @@ void USTUF_PlayerHUDWidget::OnHealthChanged(float Health, float HealthDelta)
 		OnTakeDamage();
 	}
 
-}
+	UpdateHealthBar();
 
+}
 
 
 float USTUF_PlayerHUDWidget::GetHealthPercent() const
@@ -86,6 +91,42 @@ bool  USTUF_PlayerHUDWidget::IsPlayerSpectating() const
 	const auto Controller = GetOwningPlayer();
 
 	return Controller && Controller->GetStateName() == NAME_Spectating;
+}
+
+int32 USTUF_PlayerHUDWidget::GetKillsNum() const
+{
+	// получаем контроллер игрока
+	const auto Controller = GetOwningPlayer();
+	if(!Controller) return 0;
+
+	const auto PlayerState = Cast<ASTUF_PlayerState>(Controller->PlayerState);
+	return PlayerState ? PlayerState->GetKillsNum() : 0;
+
+}
+
+void USTUF_PlayerHUDWidget::UpdateHealthBar()
+{
+	if (HealthProgressBar)
+	{
+		HealthProgressBar->SetFillColorAndOpacity(GetHealthPercent() > PercentColorTreshold ? GoodColor : BadColor);
+	}
+}
+
+FString USTUF_PlayerHUDWidget::FormatBullets(int32 BulletsNum) const
+{
+	const int32 MaxLen = 3;
+	const TCHAR PrefixSymbol = '0';
+
+	auto BulletStr = FString::FromInt(BulletsNum);
+	const auto SymbolsNumToAdd = MaxLen - BulletStr.Len();
+
+	if (SymbolsNumToAdd > 0)
+	{
+		BulletStr = FString::ChrN(SymbolsNumToAdd, PrefixSymbol).Append(BulletStr);
+	}
+
+	return BulletStr;
+
 }
 
 

@@ -16,9 +16,6 @@ class STUF_API USTUF_GameDataWidget : public UUserWidget
 
 public:
 	UFUNCTION(BlueprintCallable, Category = "UI")
-	int32 GetKillsNum() const;
-
-	UFUNCTION(BlueprintCallable, Category = "UI")
 	int32 GetCurrentRoundNum() const;
 
 	UFUNCTION(BlueprintCallable, Category = "UI")
