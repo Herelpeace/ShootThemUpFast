@@ -85,17 +85,28 @@ void USTUF_MenuWidget::OnLevelSelected(const FLevelData& Data)
 			LevelItemWidget->SetSelected(IsSelected);	// устанавливаем видимость рамки
 		}
 	}
-
 }
 
 
 void USTUF_MenuWidget::OnStartGame()
 {
+	PlayAnimation(HideAnimation);
+
+}
+
+
+// вызывается каждый раз когда завершилась какая нибудь анимация
+void USTUF_MenuWidget::OnAnimationFinished_Implementation(const UWidgetAnimation* Animation)
+{
+	if(Animation!=HideAnimation) return;
+
+	// загрузка уровня после того как прошла анимация загрузки
 	const auto STUGameInstance = GetSTUFGameInstance();
 
 	if(!STUGameInstance) return;
 
 	UGameplayStatics::OpenLevel(this, STUGameInstance->GetStartupLevel().LevelName);
+
 }
 
 void USTUF_MenuWidget::OnQuitGame()
