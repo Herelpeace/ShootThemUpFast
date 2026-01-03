@@ -32,7 +32,6 @@ void USTUF_PlayerHUDWidget::OnNewPawn(APawn* NewPawn)
 	}
 
 	UpdateHealthBar();
-
 }
 
 
@@ -41,10 +40,14 @@ void USTUF_PlayerHUDWidget::OnHealthChanged(float Health, float HealthDelta)
 	if (HealthDelta < 0.0f)
 	{
 		OnTakeDamage();
+
+		if (!IsAnimationPlaying(DamageAnimation))
+		{
+			PlayAnimation(DamageAnimation); 
+		}
 	}
 
 	UpdateHealthBar();
-
 }
 
 
@@ -101,7 +104,6 @@ int32 USTUF_PlayerHUDWidget::GetKillsNum() const
 
 	const auto PlayerState = Cast<ASTUF_PlayerState>(Controller->PlayerState);
 	return PlayerState ? PlayerState->GetKillsNum() : 0;
-
 }
 
 void USTUF_PlayerHUDWidget::UpdateHealthBar()
@@ -126,7 +128,6 @@ FString USTUF_PlayerHUDWidget::FormatBullets(int32 BulletsNum) const
 	}
 
 	return BulletStr;
-
 }
 
 

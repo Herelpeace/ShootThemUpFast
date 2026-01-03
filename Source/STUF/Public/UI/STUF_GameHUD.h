@@ -7,6 +7,8 @@
 #include "STUFCoreTypes.h"
 #include "STUF_GameHUD.generated.h"
 
+class USTUF_BaseWidget;
+
 UCLASS()
 class STUF_API ASTUF_GameHUD : public AHUD
 {
@@ -29,10 +31,10 @@ protected:
 
 private:
 	UPROPERTY()
-	TMap<ESTUMatchState,UUserWidget*> GameWidgets;
+	TMap<ESTUMatchState,USTUF_BaseWidget*> GameWidgets;
 
 	UPROPERTY()
-	UUserWidget* CurrentWidget = nullptr;
+	USTUF_BaseWidget* CurrentWidget = nullptr;
 
 	void DrawCrossHair();
 

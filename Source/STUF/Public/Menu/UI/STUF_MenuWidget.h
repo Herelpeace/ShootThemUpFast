@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Blueprint/UserWidget.h"
+#include "UI/STUF_BaseWidget.h"
 #include "STUFCoreTypes.h"
 #include "STUF_MenuWidget.generated.h"
 
@@ -13,7 +13,7 @@ class USTUF_GameInstance;
 class USTUF_LevelItemWidget;
 
 UCLASS()
-class STUF_API USTUF_MenuWidget : public UUserWidget
+class STUF_API USTUF_MenuWidget : public USTUF_BaseWidget
 {
 	GENERATED_BODY()
 

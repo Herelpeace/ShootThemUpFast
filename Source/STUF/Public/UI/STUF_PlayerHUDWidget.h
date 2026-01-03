@@ -4,13 +4,13 @@
 
 #include "CoreMinimal.h"
 #include "STUFCoreTypes.h"
-#include "Blueprint/UserWidget.h"
+#include "UI/STUF_BaseWidget.h"
 #include "STUF_PlayerHUDWidget.generated.h"
 
 class UProgressBar;
 
 UCLASS()
-class STUF_API USTUF_PlayerHUDWidget : public UUserWidget
+class STUF_API USTUF_PlayerHUDWidget : public USTUF_BaseWidget
 {
 	GENERATED_BODY()
 
@@ -43,6 +43,9 @@ public:
 protected:
 	UPROPERTY(meta = (BindWidget))
 	UProgressBar* HealthProgressBar;
+
+	UPROPERTY(meta = (BindWidgetAnim), Transient)
+	UWidgetAnimation* DamageAnimation;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "UI")
 	float PercentColorTreshold = 0.3f;

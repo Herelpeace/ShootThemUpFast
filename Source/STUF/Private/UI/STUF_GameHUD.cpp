@@ -3,7 +3,7 @@
 
 #include "UI/STUF_GameHUD.h"
 #include "Engine/Canvas.h"
-#include "Blueprint/UserWidget.h"
+#include "UI/STUF_BaseWidget.h"
 #include "STUF_GameModeBase.h"
 #include "Logging/StructuredLog.h"
 
@@ -21,9 +21,9 @@ void ASTUF_GameHUD::BeginPlay()
 	Super::BeginPlay();
 
 	// добавлем пару ключ-значение в массив (состояние игры - виджет)
-	GameWidgets.Add(ESTUMatchState::InProgress,CreateWidget<UUserWidget>(GetWorld(), PlayerHUDWidgetClass));
-	GameWidgets.Add(ESTUMatchState::Pause,CreateWidget<UUserWidget>(GetWorld(), PauseWidgetClass));
-	GameWidgets.Add(ESTUMatchState::GameOver,CreateWidget<UUserWidget>(GetWorld(), GameOverWidgetClass));
+	GameWidgets.Add(ESTUMatchState::InProgress,CreateWidget<USTUF_BaseWidget>(GetWorld(), PlayerHUDWidgetClass));
+	GameWidgets.Add(ESTUMatchState::Pause,CreateWidget<USTUF_BaseWidget>(GetWorld(), PauseWidgetClass));
+	GameWidgets.Add(ESTUMatchState::GameOver,CreateWidget<USTUF_BaseWidget>(GetWorld(), GameOverWidgetClass));
 
 
 	for (auto GameWidgetPair : GameWidgets)
@@ -67,6 +67,7 @@ void ASTUF_GameHUD::OnMatchStateChanged(ESTUMatchState State)
 	{
 		// делвем видимым новый текущий виджет
 		CurrentWidget->SetVisibility(ESlateVisibility::Visible);
+		CurrentWidget->Show();	// анимация в виджете
 	}
 
 

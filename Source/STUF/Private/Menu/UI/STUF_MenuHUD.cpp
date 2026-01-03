@@ -2,7 +2,7 @@
 
 
 #include "Menu/UI/STUF_MenuHUD.h"
-#include "Blueprint/UserWidget.h"
+#include "UI/STUF_BaseWidget.h"
 
 void ASTUF_MenuHUD::BeginPlay()
 {
@@ -10,11 +10,12 @@ void ASTUF_MenuHUD::BeginPlay()
 
 	if (MenuWidgetClass)
 	{
-		const auto MenuWidget = CreateWidget<UUserWidget>(GetWorld(),MenuWidgetClass);
+		const auto MenuWidget = CreateWidget<USTUF_BaseWidget>(GetWorld(),MenuWidgetClass);
 
 		if (MenuWidget)
 		{
 			MenuWidget->AddToViewport();
+			MenuWidget->Show();
 		}
 
 	}
