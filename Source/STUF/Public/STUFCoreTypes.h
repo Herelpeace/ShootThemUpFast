@@ -13,6 +13,7 @@
 class ASTUF_BaseWeapon;
 class UMaterialInterface;
 class UNiagaraSystem;
+class USoundCue;
 
 DECLARE_MULTICAST_DELEGATE_OneParam(FOnClipEmptySignature,ASTUF_BaseWeapon*);
 
@@ -114,6 +115,10 @@ struct FImpactData
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "VFX");
 	FDecalData DecalData;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "VFX");
+	USoundCue* Sound;
+
 };
 
 // GameMode

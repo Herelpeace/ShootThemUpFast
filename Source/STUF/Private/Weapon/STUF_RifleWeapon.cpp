@@ -33,6 +33,7 @@ void ASTUF_RifleWeapon::StartFire()
 	GetWorldTimerManager().SetTimer(ShotTimerHandle, this,&ASTUF_RifleWeapon::MakeShot, TimerBetweenShots, true);
 
 	MakeShot();
+
 }
 
 void ASTUF_RifleWeapon::StopFire()
@@ -89,6 +90,8 @@ void ASTUF_RifleWeapon::MakeShot()
 	SpawnTraceFX(GetMazzleWorldLocation(),TraceFXEnd); 
 
 	DecreaseAmmo();
+
+	
 }
 
 // получаем точки начала и конца линии 
