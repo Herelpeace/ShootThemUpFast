@@ -9,6 +9,7 @@
 
 class USTUF_HealthComponent;
 class USTUF_WeaponComponent;
+class USoundCue;
 
 
 UCLASS()
@@ -42,6 +43,9 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Material")
 	FName MaterialColorName = "Paint Color";
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "USound")
+	USoundCue* DeathSound;	
 
 
 	// Called when the game starts or when spawned

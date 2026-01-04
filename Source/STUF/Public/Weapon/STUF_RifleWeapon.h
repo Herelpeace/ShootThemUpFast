@@ -9,6 +9,7 @@
 class USTU_WeaponFXComponent;
 class UNiagaraComponent;
 class UNiagaraSystem;
+class UAudioComponent;
 
 UCLASS()
 class STUF_API ASTUF_RifleWeapon : public ASTUF_BaseWeapon
@@ -46,19 +47,22 @@ protected:
 
 	virtual bool GetTraceData(FVector& TraceStart, FVector& TraceEnd) const override;
 
-	void MakeDamage(const FHitResult &HitResult);
-
 private:
 	FTimerHandle ShotTimerHandle;
 
 	UPROPERTY();
 	UNiagaraComponent* MuzzleFXComponent;
 
+	UPROPERTY();
+	UAudioComponent* FireAudioComponent;
+
+	void MakeDamage(const FHitResult &HitResult);
+
 	// спавнит Niagara систему, выставляет видимость
-	void InitMuzzleFX();
+	void InitFX();
 
 	// выставляет фллаг видимости эффекта
-	void SetMuzzleFXVisibility(bool Visible);
+	void SetFXActive(bool IsActive);
 
 	void SpawnTraceFX (const FVector& TraceStart, FVector& TraceEnd);
 

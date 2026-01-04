@@ -7,6 +7,9 @@
 #include "Weapon/Components/STU_WeaponFXComponent.h"
 #include "NiagaraComponent.h"
 #include "NiagaraFunctionLibrary.h"
+#include "Kismet/GameplayStatics.h"
+#include "Sound/SoundCue.h"
+#include "Components/AudioComponent.h"
 
 ASTUF_RifleWeapon::ASTUF_RifleWeapon()
 {
@@ -25,7 +28,7 @@ void ASTUF_RifleWeapon::StartFire()
 {
 	//UE_LOGFMT(LogBaseWeapon,Warning, "Fire!");
 
-	InitMuzzleFX();
+	InitFX();
 
 	GetWorldTimerManager().SetTimer(ShotTimerHandle, this,&ASTUF_RifleWeapon::MakeShot, TimerBetweenShots, true);
 
@@ -37,7 +40,7 @@ void ASTUF_RifleWeapon::StopFire()
 	//UE_LOGFMT(LogBaseWeapon,Warning, "Fire!");
 
 	GetWorldTimerManager().ClearTimer(ShotTimerHandle);
-	SetMuzzleFXVisibility(false);
+	SetFXActive(false);
 
 }
 
@@ -119,26 +122,35 @@ void ASTUF_RifleWeapon::MakeDamage(const FHitResult &HitResult)
 }
 
 	// спавнит Niagara систему, выставляет видимость
-void ASTUF_RifleWeapon::InitMuzzleFX()
+void ASTUF_RifleWeapon::InitFX()
 {
 	if (!MuzzleFXComponent)		// если система не заспавнена, спавним её
 	{
 		MuzzleFXComponent = SpawnMuzzleFX();
 	}
 
-	SetMuzzleFXVisibility(true);
+	if (!FireAudioComponent)
+	{
+		FireAudioComponent =  UGameplayStatics::SpawnSoundAttached(FireSound, WeaponMesh, MuzzleSocketName);
+	}
 
+	SetFXActive(true);
 }
 
 	// выставляет фллаг видимости эффекта
-void ASTUF_RifleWeapon::SetMuzzleFXVisibility(bool Visible)
+void ASTUF_RifleWeapon::SetFXActive(bool IsActive)
 {
 	if (MuzzleFXComponent)
 	{
-		MuzzleFXComponent->SetPaused(!Visible);				// воспроизведение эффекта на паузу
-		MuzzleFXComponent->SetVisibility(Visible, true);	// рендер эффекта
-		
+		MuzzleFXComponent->SetPaused(!IsActive);				// воспроизведение эффекта на паузу
+		MuzzleFXComponent->SetVisibility(IsActive, true);	// рендер эффекта	
 	}
+
+	if (FireAudioComponent)
+	{
+		IsActive ? FireAudioComponent->Play() : FireAudioComponent->Stop();
+	}
+
 }
 
 void ASTUF_RifleWeapon::SpawnTraceFX (const FVector& TraceStart, FVector& TraceEnd)
