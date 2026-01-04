@@ -11,6 +11,7 @@ class UButton;
 class UHorizontalBox;
 class USTUF_GameInstance;
 class USTUF_LevelItemWidget;
+class USoundCue;
 
 UCLASS()
 class STUF_API USTUF_MenuWidget : public USTUF_BaseWidget
@@ -32,6 +33,10 @@ protected:
 
 	UPROPERTY(meta = (BindWidgetAnim), Transient)
 	UWidgetAnimation* HideAnimation;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "USound")
+	USoundCue* StartGameSound;		
+
 
 	virtual void NativeOnInitialized() override;
 
