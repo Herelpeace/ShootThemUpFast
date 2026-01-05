@@ -4,6 +4,7 @@
 #include "Player/STUF_PlayerController.h"
 #include "Components/STUF_RespawnComponent.h"
 #include "STUF_GameModeBase.h"
+#include "STUF_GameInstance.h"
 
 
 ASTUF_PlayerController::ASTUF_PlayerController()
@@ -20,6 +21,7 @@ void ASTUF_PlayerController::SetupInputComponent()
 	if(!InputComponent) return;
 
 	InputComponent->BindAction("PauseGame", IE_Pressed, this, &ASTUF_PlayerController::OnPauseGame);
+	InputComponent->BindAction("Mute", IE_Pressed, this, &ASTUF_PlayerController::OnMuteSound);
 
 }
 
@@ -57,6 +59,17 @@ void ASTUF_PlayerController::OnMatchStateChanged(ESTUMatchState State)
 		SetInputMode(FInputModeUIOnly());
 		bShowMouseCursor = true;
 	}
+}
+
+void ASTUF_PlayerController::OnMuteSound()
+{
+	if(!GetWorld()) return;
+	const auto STUF_GameInstance = GetWorld()->GetGameInstance<USTUF_GameInstance>();
+
+	if(!STUF_GameInstance) return;
+
+	STUF_GameInstance->ToggleVolume();
+
 }
 
 

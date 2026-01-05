@@ -35,7 +35,8 @@ public class STUF : ModuleRules
             "STUF/Public/AI/EQS",
             "STUF/Public/AI/Decorators",
             "STUF/Public/Menu",
-            "STUF/Public/Menu/UI"
+            "STUF/Public/Menu/UI",
+            "STUF/Public/Sound"
 
                                                  });
 

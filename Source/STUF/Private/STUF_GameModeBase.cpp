@@ -77,7 +77,7 @@ void ASTUF_GameModeBase::StartRound()
 
 void ASTUF_GameModeBase::GameTimerUpdate()
 {
-	UE_LOGFMT(LogSTUFGameModeBase,Warning,"Time: {0} / Round: {1}/{2} ",RoundCountDown, CurrentRound, GameData.RoundsNum);
+	//UE_LOGFMT(LogSTUFGameModeBase,Warning,"Time: {0} / Round: {1}/{2} ",RoundCountDown, CurrentRound, GameData.RoundsNum);
 
 	if (--RoundCountDown == 0)
 	{
@@ -221,7 +221,7 @@ void ASTUF_GameModeBase::RespawnRequest(AController* Controller)
 
 void ASTUF_GameModeBase::GameOver()
 {
-	UE_LOGFMT(LogSTUFGameModeBase,Warning,"======== Game Over ========" );
+	//UE_LOGFMT(LogSTUFGameModeBase,Warning,"======== Game Over ========" );
 	LogPlayerInfo();
 
 	for(auto Pawn: TActorRange<APawn>(GetWorld()))
