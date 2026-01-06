@@ -36,7 +36,11 @@ public:
 
 	bool IsAmmoFull() const;
 
+	virtual void Zoom(bool Enable) {};		// приближение прицела, только для винтовки
+
 protected:
+	float DefaultCameraFOV = 100.0f;
+
 	UPROPERTY(VisibleAnywhere,BlueprintReadWrite, Category = "MyComponents")
 	USkeletalMeshComponent* WeaponMesh;
 

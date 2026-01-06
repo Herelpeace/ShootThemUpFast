@@ -97,6 +97,12 @@ void ASTUF_PlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInp
 	PlayerInputComponent->BindAction("NextWeapon", IE_Pressed, WeaponComponent, &USTUF_WeaponComponent::NextWeapon);
 	PlayerInputComponent->BindAction("Reload", IE_Pressed, WeaponComponent, &USTUF_WeaponComponent::Reload);
 
+
+	// приближение на оружии
+	DECLARE_DELEGATE_OneParam(FZoomInputSignature, bool);
+	PlayerInputComponent->BindAction <FZoomInputSignature> ("Zoom", IE_Pressed, WeaponComponent, &USTUF_WeaponComponent::Zoom, true);
+	PlayerInputComponent->BindAction <FZoomInputSignature> ("Zoom", IE_Released , WeaponComponent, &USTUF_WeaponComponent::Zoom, false);
+
 }
 
 // вызывается при движении вперед/ назад
@@ -132,11 +138,10 @@ bool ASTUF_PlayerCharacter::IsRunning() const
 
 void ASTUF_PlayerCharacter::OnDeath()
 {
-
-if (Controller)
-{
-	Super::OnDeath();
-	Controller->ChangeState(NAME_Spectating);
-}
+	if (Controller)
+	{
+		Super::OnDeath();
+		Controller->ChangeState(NAME_Spectating);
+	}
 
 }

@@ -30,6 +30,10 @@ public:
 
 	bool NeedAmmo(TSubclassOf<ASTUF_BaseWeapon> WeaponType);
 
+	void Zoom (bool Enabled);
+
+	void ResetWeaponState();
+
 protected:
 
 	UPROPERTY(EditDefaultsOnly, Category = "AComponents")
@@ -61,6 +65,7 @@ protected:
 
 	void EquipWeapon(int32 WeaponIndex);
 
+	
 private:
 	UPROPERTY()
 	UAnimMontage* CurrentReloadAnimMontage = nullptr;

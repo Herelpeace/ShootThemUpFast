@@ -18,7 +18,6 @@ class STUF_API ASTUF_LauncherWeapon : public ASTUF_BaseWeapon
 public:
 	virtual void StartFire() override;
 
-
 protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 	TSubclassOf<ASTUF_Projectiles> ProjectileClass;

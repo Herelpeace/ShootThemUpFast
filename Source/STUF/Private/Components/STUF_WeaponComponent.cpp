@@ -95,6 +95,7 @@ void USTUF_WeaponComponent::EquipWeapon(int32 WeaponIndex)
 	if (CurrentWeapon)
 	{
 		CurrentWeapon->StopFire();
+		CurrentWeapon->Zoom(false);
 
 		// присоединяем к спине персонажа
 		AttachWeaponToSocket(CurrentWeapon,Character->GetMesh(), WeaponArmorySocketName);
@@ -293,5 +294,36 @@ bool USTUF_WeaponComponent::NeedAmmo(TSubclassOf<ASTUF_BaseWeapon> WeaponType)
 		}
 	}
 	return false;
+}
+
+void USTUF_WeaponComponent::Zoom(bool Enabled)
+{
+	if (CurrentWeapon)
+	{
+		CurrentWeapon->Zoom(Enabled);
+	}
+}
+
+void USTUF_WeaponComponent::ResetWeaponState()
+{
+	Zoom(false);
+
+	StopFire();
+
+	for (auto Weapon : Weapons)
+	{
+		if (Weapon)
+		{
+			Weapon->Zoom(false);
+		}
+	}
+
+	EquipAnimInProgress = false;
+	ReloadAnimInProgress = false;
+
+	if (CurrentWeapon)
+	{
+		CurrentWeapon->StopFire();
+	}
 
 }

@@ -12,6 +12,8 @@
 #include "Components/STUF_RespawnComponent.h"
 #include "EngineUtils.h"
 #include "STUF_GameInstance.h"
+#include "Components/STUF_WeaponComponent.h"
+#include "STUF_RifleWeapon.h"
 
 
 DEFINE_LOG_CATEGORY_STATIC(LogSTUFGameModeBase, All, All);
@@ -72,6 +74,8 @@ void ASTUF_GameModeBase::StartRound()
 {
 	RoundCountDown = GameData.RoundTime;
 	GetWorldTimerManager().SetTimer(GameRoundTimerHandle, this, &ASTUF_GameModeBase::GameTimerUpdate, 1.0f, true);
+
+
 }
 
 
@@ -105,6 +109,7 @@ void ASTUF_GameModeBase::ResetPlayers()
 	{
 		ResetOnePlayer(It->Get());
 	}
+
 }
 
 // делает destroy всех акторов, заново спавнит их
@@ -112,6 +117,14 @@ void ASTUF_GameModeBase::ResetOnePlayer(AController* Controller)
 {
 	if (Controller && Controller->GetPawn())
 	{
+		if (auto Character = Cast<ASTUF_Character>(Controller->GetPawn()))
+		{
+			if(auto WeaponComp = Character->FindComponentByClass<USTUF_WeaponComponent>() )
+			{
+				WeaponComp->ResetWeaponState();
+			}
+		}
+
 		Controller->GetPawn()->Reset();
 	}
 	RestartPlayer(Controller);
@@ -165,6 +178,7 @@ void ASTUF_GameModeBase::SetPlayerColor(AController* Controller)
 
 	Character->SetPlayerColor(PlayerState->GetTeamColor());
 
+	
 }
 
 void ASTUF_GameModeBase::Killed(AController* KillerController, AController* VictimController)
@@ -212,6 +226,7 @@ void ASTUF_GameModeBase::StartRespawn(AController* Controller)
 	if(!RespawnComponent) return;
 
 	RespawnComponent->Respawn(GameData.RespawnTime);
+
 }
 
 void ASTUF_GameModeBase::RespawnRequest(AController* Controller)

@@ -6,6 +6,8 @@
 #include "Components/STUF_CharacterMovementComponent.h"
 #include "Components/STUF_HealthComponent.h"
 #include "Components/STUF_WeaponComponent.h"
+#include "Player/STUF_PlayerController.h"
+#include "STUF_GameModeBase.h"
 #include "Logging/StructuredLog.h"
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/Controller.h"
@@ -102,7 +104,9 @@ void ASTUF_Character::OnDeath()
 
 	GetCapsuleComponent()->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
 
-	WeaponComponent->StopFire();
+	// WeaponComponent->StopFire();
+	// WeaponComponent->Zoom(false);
+	WeaponComponent->ResetWeaponState();
 
 	GetMesh()->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 	GetMesh()->SetSimulatePhysics(true);
@@ -118,4 +122,6 @@ void ASTUF_Character::SetPlayerColor(const FLinearColor& Color)
 	MaterialInst->SetVectorParameterValue(MaterialColorName,Color);
 
 }
+
+
 

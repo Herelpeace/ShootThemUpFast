@@ -64,7 +64,7 @@ void ASTUF_Projectiles::OnProjectileHit (UPrimitiveComponent* HitComponent, AAct
 		DoFullDamage//
 	                                   );
 
-	DrawDebugSphere(GetWorld(), GetActorLocation(), DamageRadius, 50, FColor::Red, false, 5.0f);
+	//DrawDebugSphere(GetWorld(), GetActorLocation(), DamageRadius, 50, FColor::Red, false, 5.0f);
 
 	WeaponFXComponent->PlayImpactFx(Hit);
 

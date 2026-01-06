@@ -20,6 +20,7 @@ public:
 	ASTUF_RifleWeapon();
 	virtual void StartFire() override;
 	virtual void StopFire() override;
+	virtual void Zoom(bool Enable) override;
 
 protected:
 	UPROPERTY(EditDefaultsOnly,BlueprintReadWrite);
@@ -40,6 +41,9 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "VFX")
 	FString TraceTargetName = "TraceTarget";
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Zoom")
+	float FOVZoomAngle = 45.0f;
 
 	virtual void BeginPlay() override;
 
@@ -67,5 +71,7 @@ private:
 	void SpawnTraceFX (const FVector& TraceStart, FVector& TraceEnd);
 
 	AController* GetController() const;
+
+	
 
 };

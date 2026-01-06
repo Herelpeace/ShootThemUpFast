@@ -120,7 +120,10 @@ void ASTUF_RifleWeapon::MakeDamage(const FHitResult &HitResult)
 
 	if(!DamageActor) return;
 
-	DamageActor->TakeDamage(DamageAmount, FDamageEvent(), GetController(), this );
+	FPointDamageEvent PointDamageEvent;
+	PointDamageEvent.HitInfo = HitResult;
+
+	DamageActor->TakeDamage(DamageAmount, PointDamageEvent, GetController(), this );
 
 }
 
@@ -135,6 +138,9 @@ void ASTUF_RifleWeapon::InitFX()
 	if (!FireAudioComponent)
 	{
 		FireAudioComponent =  UGameplayStatics::SpawnSoundAttached(FireSound, WeaponMesh, MuzzleSocketName);
+
+		// из WeaponComponent
+		// AttachWeaponToSocket(CurrentWeapon,Character->GetMesh(), WeaponArmorySocketName);
 	}
 
 	SetFXActive(true);
@@ -153,7 +159,6 @@ void ASTUF_RifleWeapon::SetFXActive(bool IsActive)
 	{
 		IsActive ? FireAudioComponent->Play() : FireAudioComponent->Stop();
 	}
-
 }
 
 void ASTUF_RifleWeapon::SpawnTraceFX (const FVector& TraceStart, FVector& TraceEnd)
@@ -164,13 +169,25 @@ void ASTUF_RifleWeapon::SpawnTraceFX (const FVector& TraceStart, FVector& TraceE
 		// в переменную конечной точки эффекта трассировки записываем конечную точку выстрела
 		TraceFXComponent->SetNiagaraVariableVec3(TraceTargetName, TraceEnd);
 	}
-
 }
 
 AController* ASTUF_RifleWeapon::GetController() const
 {
 	const auto Pawn = Cast<APawn>(GetOwner());
 	return Pawn? Pawn->GetController():nullptr;
+}
+
+void ASTUF_RifleWeapon::Zoom(bool Enable)
+{
+	const auto Controller = Cast <APlayerController> (GetController());
+	if(!Controller || !Controller->PlayerCameraManager) return;
+
+	if (Enable)
+	{
+		DefaultCameraFOV = Controller->PlayerCameraManager->GetFOVAngle();
+	}
+
+	Controller ->PlayerCameraManager->SetFOV(Enable ? FOVZoomAngle : DefaultCameraFOV);
 
 }
 

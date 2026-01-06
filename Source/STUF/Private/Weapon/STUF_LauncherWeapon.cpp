@@ -55,5 +55,5 @@ void ASTUF_LauncherWeapon::MakeShot()
 
 	UGameplayStatics::SpawnSoundAttached(FireSound, WeaponMesh, MuzzleSocketName);
 
-
 }
+
