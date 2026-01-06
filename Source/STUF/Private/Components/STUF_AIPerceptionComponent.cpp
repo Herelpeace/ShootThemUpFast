@@ -11,6 +11,7 @@
 #include "STUUtils.h"
 #include "Components/STUF_HealthComponent.h"
 #include "Perception/AISense_Sight.h"
+#include "Perception/AISense_Damage.h"
 
 
 AActor* USTUF_AIPerceptionComponent::GetClosestEnemy() const
@@ -20,7 +21,12 @@ AActor* USTUF_AIPerceptionComponent::GetClosestEnemy() const
 
 	// функция которая получаает всех акторов включая игрока определенных чувствами
 	GetCurrentlyPerceivedActors(UAISense_Sight::StaticClass(),PerciveActors );
-	if(PerciveActors.Num()==0) return nullptr;
+	if (PerciveActors.Num() == 0)
+	{
+		GetCurrentlyPerceivedActors(UAISense_Damage::StaticClass(),PerciveActors );
+		if (PerciveActors.Num() == 0) return nullptr;
+
+	}
 
 	const auto Controller = Cast<AAIController>(GetOwner());
 	if(!Controller) return nullptr;

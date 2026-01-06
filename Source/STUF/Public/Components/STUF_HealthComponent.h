@@ -86,5 +86,7 @@ private:
 
 	float GetPointDamageModifier(AActor* DamageActor, const FName& BoneName);
 
+	void ReportDamageEvent(float Damage, AController* InstigatedBy);
+
 
 };

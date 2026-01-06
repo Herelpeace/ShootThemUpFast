@@ -10,6 +10,7 @@
 #include "Camera/CameraShakeBase.h"
 #include "STUF_GameModeBase.h"
 #include "PhysicalMaterials/PhysicalMaterial.h"
+#include "Perception/AISense_Damage.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogHealthComponent,All,All);
 
@@ -77,7 +78,7 @@ void USTUF_HealthComponent::ApplyDamage(float Damage, AController* InstigatedBy)
 
 	// тряска камеры
 	PlayCameraShake();
-
+	ReportDamageEvent(Damage, InstigatedBy);
 }
 
 void USTUF_HealthComponent::HealUpdate()
@@ -153,4 +154,11 @@ float USTUF_HealthComponent::GetPointDamageModifier(AActor* DamageActor, const F
 
 	return DamageModifiers[PhysMaterial];
 
+}
+
+void USTUF_HealthComponent::ReportDamageEvent(float Damage, AController* InstigatedBy)
+{
+	if(!InstigatedBy || !InstigatedBy->GetPawn() || !GetOwner()  ) return;
+
+	UAISense_Damage::ReportDamageEvent(GetWorld(), GetOwner(), InstigatedBy->GetPawn(), Damage, InstigatedBy->GetPawn()->GetActorLocation(), GetOwner()->GetActorLocation() );
 }
